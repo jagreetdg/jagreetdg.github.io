@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Debug - Ripply</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 0;
+				padding: 20px;
+				background: linear-gradient(
+					135deg,
+					#6b2fbc 0%,
+					#9d50e8 50%,
+					#4f46e5 100%
+				);
+				color: white;
+				min-height: 100vh;
+			}
+			.debug-info {
+				background: rgba(255, 255, 255, 0.1);
+				padding: 20px;
+				border-radius: 10px;
+				margin: 20px 0;
+			}
+			.test-button {
+				background: #4f46e5;
+				color: white;
+				border: none;
+				padding: 10px 20px;
+				border-radius: 5px;
+				cursor: pointer;
+				margin: 10px 0;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>🔍 Ripply Debug Page</h1>
+
+		<div class="debug-info">
+			<h2>Environment Check</h2>
+			<p>✅ Page loads correctly</p>
+			<p>✅ CSS loads correctly</p>
+			<p id="js-check">⏳ JavaScript loading...</p>
+		</div>
+
+		<div class="debug-info">
+			<h2>Asset Paths</h2>
+			<p>Base URL: <span id="base-url"></span></p>
+			<p>Current URL: <span id="current-url"></span></p>
+			<p>
+				Asset test:
+				<img
+					src="/logo_transparent.png"
+					style="width: 50px; height: 50px"
+					alt="Logo test"
+					onerror="this.alt='❌ Logo failed to load'"
+					onload="this.alt='✅ Logo loaded'"
+				/>
+			</p>
+		</div>
+
+		<div class="debug-info">
+			<h2>React Test</h2>
+			<div id="react-test">⏳ Testing React...</div>
+			<button class="test-button" onclick="testReact()">
+				Test React Mount
+			</button>
+		</div>
+
+		<script>
+			// Basic JS test
+			document.getElementById("js-check").innerHTML =
+				"✅ JavaScript loads correctly";
+			document.getElementById("base-url").innerHTML = document.baseURI;
+			document.getElementById("current-url").innerHTML = window.location.href;
+
+			// Test if we can access the main React files
+			function testReact() {
+				const reactDiv = document.getElementById("react-test");
+				try {
+					// Try to load the main JS file
+					const script = document.createElement("script");
+					script.src = "/assets/index-CEjHHVXe.js";
+					script.onload = () => {
+						reactDiv.innerHTML = "✅ Main JS file loads";
+					};
+					script.onerror = () => {
+						reactDiv.innerHTML = "❌ Main JS file failed to load - path issue";
+					};
+					document.head.appendChild(script);
+				} catch (error) {
+					reactDiv.innerHTML = "❌ Error: " + error.message;
+				}
+			}
+
+			// Auto-run tests
+			setTimeout(() => {
+				console.log("Debug page loaded successfully");
+				console.log("Base URL:", document.baseURI);
+				console.log("Current URL:", window.location.href);
+			}, 1000);
+		</script>
+	</body>
+</html>

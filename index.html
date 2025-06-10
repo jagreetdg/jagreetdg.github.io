@@ -48,9 +48,120 @@
 
 		<!-- Theme Color -->
 		<meta name="theme-color" content="#6B2FBC" />
+
+		<style>
+			/* Loading fallback styles */
+			#loading-fallback {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: linear-gradient(
+					135deg,
+					#6b2fbc 0%,
+					#9d50e8 50%,
+					#4f46e5 100%
+				);
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				color: white;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+					sans-serif;
+				z-index: 9999;
+			}
+
+			.spinner {
+				width: 50px;
+				height: 50px;
+				border: 3px solid rgba(255, 255, 255, 0.3);
+				border-radius: 50%;
+				border-top-color: white;
+				animation: spin 1s ease-in-out infinite;
+			}
+
+			@keyframes spin {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+
+			.fallback-content {
+				text-align: center;
+				max-width: 600px;
+				padding: 20px;
+			}
+
+			.fallback-content h1 {
+				font-size: 3rem;
+				margin: 20px 0;
+				font-weight: 700;
+			}
+
+			.fallback-content p {
+				font-size: 1.2rem;
+				opacity: 0.9;
+				line-height: 1.6;
+			}
+
+			/* Hide fallback when React loads */
+			body.react-loaded #loading-fallback {
+				display: none;
+			}
+		</style>
 	</head>
 	<body>
+		<!-- Loading fallback (shown if React fails to load) -->
+		<div id="loading-fallback">
+			<div class="fallback-content">
+				<div class="spinner"></div>
+				<h1>Ripply</h1>
+				<p>New experiences through voice notes</p>
+				<p style="margin-top: 30px; font-size: 1rem">Loading the app...</p>
+				<p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.7">
+					If this takes too long, please refresh the page or check your internet
+					connection.
+				</p>
+			</div>
+		</div>
+
+		<!-- Main React app container -->
 		<div id="root"></div>
+
 		<script type="module" src="/src/main.tsx"></script>
+
+		<script>
+			// Hide loading fallback after 10 seconds if React hasn't loaded
+			setTimeout(() => {
+				const root = document.getElementById("root");
+				if (!root.hasChildNodes() || root.children.length === 0) {
+					const fallback = document.getElementById("loading-fallback");
+					const content = fallback.querySelector(".fallback-content");
+					content.innerHTML = `
+						<h1>Ripply</h1>
+						<p>New experiences through voice notes</p>
+						<p style="margin-top: 30px; font-size: 1rem;">Your voice creates new ripples of connection with others.</p>
+						<p style="margin-top: 20px; font-size: 1rem;">Coming Soon</p>
+						<p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
+							We're preparing something amazing for you. Stay tuned!
+						</p>
+					`;
+				} else {
+					document.body.classList.add("react-loaded");
+				}
+			}, 10000);
+
+			// Mark React as loaded when it mounts
+			const observer = new MutationObserver(() => {
+				const root = document.getElementById("root");
+				if (root && root.children.length > 0) {
+					document.body.classList.add("react-loaded");
+					observer.disconnect();
+				}
+			});
+			observer.observe(document.getElementById("root"), { childList: true });
+		</script>
 	</body>
 </html>
