@@ -71,8 +71,9 @@
 				position: relative;
 				overflow-x: hidden;
 			}
-			/* Loading fallback styles */
-			#loading-fallback {
+
+			/* Loading screen styles */
+			#loading-screen {
 				position: fixed;
 				top: 0;
 				left: 0;
@@ -80,9 +81,9 @@
 				height: 100%;
 				background: linear-gradient(
 					135deg,
-					#1e0a3e 0%,
-					#312e81 50%,
-					#581c87 100%
+					#0f0620 0%,
+					#1e1065 50%,
+					#3b1a5c 100%
 				);
 				display: flex;
 				flex-direction: column;
@@ -92,59 +93,129 @@
 				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
 					sans-serif;
 				z-index: 9999;
+				transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
 			}
 
-			.spinner {
-				width: 50px;
-				height: 50px;
-				border: 3px solid rgba(255, 255, 255, 0.3);
+			/* Ripple loading animation */
+			.loading-ripples {
+				position: relative;
+				width: 80px;
+				height: 80px;
+				margin-bottom: 2rem;
+			}
+
+			.loading-ripple {
+				position: absolute;
+				border: 2px solid rgba(139, 92, 246, 0.6);
 				border-radius: 50%;
-				border-top-color: white;
-				animation: spin 1s ease-in-out infinite;
+				animation: ripple 2s linear infinite;
 			}
 
-			@keyframes spin {
-				to {
-					transform: rotate(360deg);
+			.loading-ripple {
+				animation-delay: 0s;
+			}
+
+			@keyframes ripple {
+				0% {
+					top: 40px;
+					left: 40px;
+					width: 0;
+					height: 0;
+					opacity: 1;
+				}
+				100% {
+					top: 0;
+					left: 0;
+					width: 80px;
+					height: 80px;
+					opacity: 0;
 				}
 			}
 
-			.fallback-content {
+			/* Logo pulse animation */
+			.loading-logo {
+				width: 48px;
+				height: 48px;
+				margin-bottom: 1.5rem;
+				filter: brightness(1.2);
+				animation: logoPulse 2s ease-in-out infinite;
+			}
+
+			@keyframes logoPulse {
+				0%,
+				100% {
+					opacity: 0.8;
+					transform: scale(1);
+				}
+				50% {
+					opacity: 1;
+					transform: scale(1.1);
+				}
+			}
+
+			/* Loading text */
+			.loading-text {
 				text-align: center;
-				max-width: 600px;
-				padding: 20px;
+				margin-top: 1rem;
 			}
 
-			.fallback-content h1 {
-				font-size: 3rem;
-				margin: 20px 0;
+			.loading-text h1 {
+				font-size: 2.5rem;
 				font-weight: 700;
+				margin: 0 0 0.5rem 0;
+				background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
 			}
 
-			.fallback-content p {
-				font-size: 1.2rem;
-				opacity: 0.9;
-				line-height: 1.6;
+			.loading-text p {
+				font-size: 1rem;
+				opacity: 0.8;
+				margin: 0;
+				animation: textFade 2s ease-in-out infinite;
 			}
 
-			/* Hide fallback when React loads */
-			body.react-loaded #loading-fallback {
-				display: none;
+			@keyframes textFade {
+				0%,
+				100% {
+					opacity: 0.6;
+				}
+				50% {
+					opacity: 1;
+				}
+			}
+
+			/* Hide loading when React loads */
+			body.react-loaded #loading-screen {
+				opacity: 0;
+				visibility: hidden;
+				pointer-events: none;
+			}
+
+			/* Smooth transition for app */
+			#root {
+				opacity: 0;
+				transition: opacity 0.5s ease-in;
+			}
+
+			body.react-loaded #root {
+				opacity: 1;
 			}
 		</style>
 	</head>
 	<body>
-		<!-- Loading fallback (shown if React fails to load) -->
-		<div id="loading-fallback">
-			<div class="fallback-content">
-				<div class="spinner"></div>
+		<!-- Loading screen -->
+		<div id="loading-screen">
+			<img src="/logo_transparent.png" alt="Ripply Logo" class="loading-logo" />
+
+			<div class="loading-ripples">
+				<div class="loading-ripple"></div>
+			</div>
+
+			<div class="loading-text">
 				<h1>Ripply</h1>
-				<p>New experiences through voice notes</p>
-				<p style="margin-top: 30px; font-size: 1rem">Loading the app...</p>
-				<p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.7">
-					If this takes too long, please refresh the page or check your internet
-					connection.
-				</p>
+				<p>ボイスノートで新たな体験を</p>
 			</div>
 		</div>
 
@@ -168,35 +239,46 @@
 		<script type="module" crossorigin src="/src/main.tsx"></script>
 
 		<script>
-			// Hide loading fallback after 10 seconds if React hasn't loaded
+			// Hide loading screen after 8 seconds if React hasn't loaded (fallback)
 			setTimeout(() => {
 				const root = document.getElementById("root");
 				if (!root.hasChildNodes() || root.children.length === 0) {
-					const fallback = document.getElementById("loading-fallback");
-					const content = fallback.querySelector(".fallback-content");
-					content.innerHTML = `
+					const loadingScreen = document.getElementById("loading-screen");
+					const loadingText = loadingScreen.querySelector(".loading-text");
+					loadingText.innerHTML = `
 						<h1>Ripply</h1>
-						<p>New experiences through voice notes</p>
-						<p style="margin-top: 30px; font-size: 1rem;">Your voice creates new ripples of connection with others.</p>
-						<p style="margin-top: 20px; font-size: 1rem;">Coming Soon</p>
-						<p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
-							We're preparing something amazing for you. Stay tuned!
+						<p style="margin-bottom: 1rem;">ボイスノートで新たな体験を</p>
+						<p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.5rem;">Coming Soon</p>
+						<p style="font-size: 0.8rem; opacity: 0.6;">
+							新しい体験を準備中です。お楽しみに！
 						</p>
 					`;
+					// Remove ripple animation after timeout
+					const ripples = loadingScreen.querySelector(".loading-ripples");
+					if (ripples) {
+						ripples.style.display = "none";
+					}
 				} else {
 					document.body.classList.add("react-loaded");
 				}
-			}, 10000);
+			}, 8000);
 
 			// Mark React as loaded when it mounts
 			const observer = new MutationObserver(() => {
 				const root = document.getElementById("root");
 				if (root && root.children.length > 0) {
-					document.body.classList.add("react-loaded");
+					// Add small delay for smooth transition
+					setTimeout(() => {
+						document.body.classList.add("react-loaded");
+					}, 100);
 					observer.disconnect();
 				}
 			});
 			observer.observe(document.getElementById("root"), { childList: true });
+
+			// Preload logo for faster display
+			const logoImg = new Image();
+			logoImg.src = "/logo_transparent.png";
 		</script>
 	</body>
 </html>
