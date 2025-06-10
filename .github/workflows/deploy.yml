@@ -25,18 +25,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "npm"
-          cache-dependency-path: frontend/ripply-waitlist/package-lock.json
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: frontend/ripply-waitlist/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/ripply-waitlist/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: |
-          cd frontend/ripply-waitlist
-          npm ci
+        working-directory: frontend/ripply-waitlist
+        run: npm ci
 
       - name: Build
-        run: |
-          cd frontend/ripply-waitlist
-          npm run build
+        working-directory: frontend/ripply-waitlist
+        run: npm run build
         env:
           NODE_ENV: production
 
