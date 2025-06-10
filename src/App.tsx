@@ -9,7 +9,9 @@ import {
 	useComingSoonTranslations,
 	LanguageProvider,
 } from "./context/LanguageContext";
-import logoTransparent from "/logo_transparent.png";
+
+// Use Vite's import.meta.url for public assets
+const logoTransparent = "/logo_transparent.png";
 
 interface RippleState {
 	key: number;

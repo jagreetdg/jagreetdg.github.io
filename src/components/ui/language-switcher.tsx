@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Globe } from "lucide-react";
 import { Button } from "./button";
@@ -7,7 +6,7 @@ import { Language, getLanguageCode, i18nConfig } from "../../lib/i18n";
 
 interface LanguageSwitcherProps {
 	variant?: "default" | "ghost" | "outline";
-	size?: "sm" | "md" | "lg";
+	size?: "sm" | "lg" | "default" | "icon";
 	className?: string;
 	showGlobe?: boolean;
 }
