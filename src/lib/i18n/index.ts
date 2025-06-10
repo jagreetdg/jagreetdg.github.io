@@ -4,7 +4,7 @@ import { ja } from './locales/ja';
 
 // Configuration
 export const i18nConfig: I18nConfig = {
-  defaultLanguage: 'en',
+  defaultLanguage: 'ja',
   supportedLanguages: ['en', 'ja'],
   fallbackLanguage: 'en'
 };

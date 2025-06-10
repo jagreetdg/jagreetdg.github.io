@@ -39,17 +39,24 @@ class BrevoService {
     // If no API key, simulate success (for development)
     if (!this.apiKey) {
       console.log('Simulated Brevo subscription for:', email);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('No API key found - simulating successful subscription');
+      
+      // Brief delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('Simulation completed successfully');
       return { success: true };
     }
 
     try {
+      console.log('Attempting to add contact to Brevo:', email);
       const contact: BrevoContact = {
         email,
         attributes: attributes || {},
         listIds: this.listId ? [this.listId] : undefined,
         updateEnabled: true, // Update contact if already exists
       };
+
+      console.log('Sending request to Brevo with data:', contact);
 
       const response = await fetch(`${this.baseUrl}/contacts`, {
         method: 'POST',
@@ -62,6 +69,7 @@ class BrevoService {
       });
 
       const data: BrevoResponse = await response.json();
+      console.log('Brevo API response:', { status: response.status, data });
 
       if (response.ok) {
         console.log('Successfully added contact to Brevo:', email);
@@ -70,6 +78,7 @@ class BrevoService {
         // Handle specific Brevo error codes
         if (data.code === 'duplicate_parameter') {
           // Contact already exists, try to update
+          console.log('Contact already exists, trying to update');
           return await this.updateContact(email, attributes);
         }
         
@@ -80,7 +89,7 @@ class BrevoService {
         };
       }
     } catch (error) {
-      console.error('Network error:', error);
+      console.error('Network error details:', error);
       return { 
         success: false, 
         error: 'Network error. Please check your connection and try again.' 
@@ -133,7 +142,12 @@ class BrevoService {
 
   // Public method with validation
   async subscribeToWaitlist(email: string): Promise<{ success: boolean; error?: string }> {
+    console.log('subscribeToWaitlist called with email:', email);
+    console.log('API Key available:', !!this.apiKey);
+    console.log('List ID available:', this.listId);
+    
     if (!this.isValidEmail(email)) {
+      console.log('Invalid email format');
       return { success: false, error: 'Please enter a valid email address.' };
     }
 
@@ -144,7 +158,10 @@ class BrevoService {
       SIGNUP_TIME: new Date().toISOString(),
     };
 
-    return await this.addContact(email, attributes);
+    console.log('Calling addContact with attributes:', attributes);
+    const result = await this.addContact(email, attributes);
+    console.log('addContact result:', result);
+    return result;
   }
 }
 

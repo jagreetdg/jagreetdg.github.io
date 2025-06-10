@@ -28,7 +28,7 @@ interface RippleEffectProps {
 
 function RippleEffect({
 	className,
-	color = "#6B2FBC",
+	color = "#4C1D95",
 	count = 3,
 }: RippleEffectProps) {
 	return (
@@ -272,14 +272,19 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 		setFormState((prev) => ({ ...prev, status: "loading", message: "" }));
 
 		try {
+			console.log("About to call onSubscribe with email:", formState.email);
 			const result = await onSubscribe(formState.email);
+			console.log("onSubscribe returned:", result);
+
 			if (!result.success) {
+				console.log("Subscription failed:", result.error);
 				setFormState((prev) => ({
 					...prev,
 					status: "error",
 					message: result.error || t.errorMessage,
 				}));
 			} else {
+				console.log("Subscription successful!");
 				setFormState({
 					email: "",
 					status: "success",
@@ -287,6 +292,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 				});
 			}
 		} catch (error) {
+			console.error("Exception in handleSubmit:", error);
 			setFormState((prev) => ({
 				...prev,
 				status: "error",
@@ -296,34 +302,39 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 	};
 
 	return (
-		<div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-800">
+		<div
+			className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-950 via-indigo-950 to-purple-900 p-4 sm:p-6 lg:p-8"
+			style={{ backgroundColor: "#1e0a3e" }}
+		>
 			<div className="opacity-90">
 				<WaveBackground />
 			</div>
 
 			{/* Subtle animated ripple effects */}
 			<div className="absolute inset-0 pointer-events-none opacity-15">
-				<RippleEffect count={2} color="#6366F1" />
+				<RippleEffect count={2} color="#4338CA" />
 				<div className="absolute top-1/3 left-1/5 w-32 h-32 opacity-30">
-					<RippleEffect count={1} color="#8B5CF6" />
+					<RippleEffect count={1} color="#6D28D9" />
 				</div>
 				<div className="absolute bottom-1/4 right-1/5 w-24 h-24 opacity-25">
-					<RippleEffect count={1} color="#7C3AED" />
+					<RippleEffect count={1} color="#5B21B6" />
 				</div>
 			</div>
 
 			{/* Language switcher */}
 			<div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
-				<LanguageSwitcher />
+				<div className="border border-white/30 rounded-lg backdrop-blur-sm bg-white/10">
+					<LanguageSwitcher />
+				</div>
 			</div>
 
 			{/* Main content */}
-			<div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-6 py-8 sm:py-12">
+			<div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
-					className="max-w-4xl mx-auto text-center w-full"
+					className="max-w-4xl mx-auto text-center w-full px-4 sm:px-6"
 				>
 					{/* Logo/Title */}
 					<motion.div
@@ -343,7 +354,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 							</h1>
 						</div>
 						<div className="flex justify-center w-full">
-							<div className="w-32 sm:w-48 md:w-56 lg:w-64 xl:w-72 h-0.5 sm:h-1 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full" />
+							<div className="w-32 sm:w-48 md:w-56 lg:w-64 xl:w-72 h-0.5 sm:h-1 bg-gradient-to-r from-purple-600 to-indigo-600 opacity-70 rounded-full" />
 						</div>
 					</motion.div>
 
@@ -374,7 +385,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						transition={{ delay: 0.8, duration: 0.6 }}
 						className="inline-block mb-6 sm:mb-8"
 					>
-						<span className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full text-xs sm:text-sm font-medium shadow-lg">
+						<span className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-purple-700 to-indigo-700 bg-opacity-80 text-white rounded-full text-xs sm:text-sm font-medium shadow-lg backdrop-blur-sm">
 							{t.comingSoon}
 						</span>
 					</motion.div>
@@ -406,7 +417,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 1.4, duration: 0.6 }}
-						className="max-w-md mx-auto px-2"
+						className="max-w-md mx-auto px-4 sm:px-6"
 					>
 						<AnimatePresence mode="wait">
 							{formState.status === "success" ? (
@@ -417,18 +428,16 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 									exit={{ opacity: 0, scale: 0.8 }}
 									className="text-center"
 								>
-									<div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+									<div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
 										<svg
-											className="w-6 h-6 sm:w-8 sm:h-8 text-white"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
+											className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+											fill="currentColor"
+											viewBox="0 0 20 20"
 										>
 											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M5 13l4 4L19 7"
+												fillRule="evenodd"
+												d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+												clipRule="evenodd"
 											/>
 										</svg>
 									</div>
@@ -456,7 +465,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 												}))
 											}
 											placeholder={t.emailPlaceholder}
-											className="w-full h-11 sm:h-12 bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:border-purple-400 focus:ring-purple-400 text-sm sm:text-base px-3 sm:px-4"
+											className="w-full h-11 sm:h-12 bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:border-purple-600 focus:ring-purple-600 text-sm sm:text-base px-3 sm:px-4"
 											disabled={isLoading}
 											required
 										/>
@@ -464,7 +473,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 											type="submit"
 											disabled={isLoading}
 											onClick={createClickRipple}
-											className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 w-full h-11 sm:h-12 font-medium transition-all duration-200 text-sm sm:text-base"
+											className="relative overflow-hidden bg-gradient-to-r from-purple-800/70 to-indigo-800/70 hover:from-purple-900/80 hover:to-indigo-900/80 text-white border-0 w-full max-w-60 h-11 sm:h-12 font-medium transition-all duration-200 text-sm sm:text-base rounded-lg backdrop-blur-sm mx-auto"
 										>
 											<span
 												className={cn(
@@ -527,9 +536,16 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 }
 
 function App() {
+	const handleSubscribe = async (email: string) => {
+		console.log("App.handleSubscribe called with:", email);
+		const result = await brevoService.subscribeToWaitlist(email);
+		console.log("App.handleSubscribe result:", result);
+		return result;
+	};
+
 	return (
 		<LanguageProvider>
-			<RipplyWaitlistPage onSubscribe={brevoService.subscribeToWaitlist} />
+			<RipplyWaitlistPage onSubscribe={handleSubscribe} />
 		</LanguageProvider>
 	);
 }
