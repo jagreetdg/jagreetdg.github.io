@@ -50,23 +50,20 @@
 			<p>Base URL: <span id="base-url"></span></p>
 			<p>Current URL: <span id="current-url"></span></p>
 			<p>
-				Asset test:
-				<img
-					src="/logo_transparent.png"
-					style="width: 50px; height: 50px"
-					alt="Logo test"
-					onerror="this.alt='❌ Logo failed to load'"
-					onload="this.alt='✅ Logo loaded'"
-				/>
+				Logo test: <img src="/logo_transparent.png" style="width: 50px; height:
+				50px;" alt="Logo test" onerror="this.alt='❌ Logo failed to load';
+				this.style.display='none';" onload="this.alt='✅ Logo loaded'>
 			</p>
+			<p>CSS test: <span id="css-test">⏳ Testing...</span></p>
+			<p>JS test: <span id="js-test">⏳ Testing...</span></p>
 		</div>
 
 		<div class="debug-info">
-			<h2>React Test</h2>
-			<div id="react-test">⏳ Testing React...</div>
-			<button class="test-button" onclick="testReact()">
-				Test React Mount
+			<h2>Manual Asset Tests</h2>
+			<button class="test-button" onclick="testAssets()">
+				Test All Assets
 			</button>
+			<div id="asset-results"></div>
 		</div>
 
 		<script>
@@ -76,27 +73,72 @@
 			document.getElementById("base-url").innerHTML = document.baseURI;
 			document.getElementById("current-url").innerHTML = window.location.href;
 
-			// Test if we can access the main React files
-			function testReact() {
-				const reactDiv = document.getElementById("react-test");
-				try {
-					// Try to load the main JS file
-					const script = document.createElement("script");
-					script.src = "/assets/index-CEjHHVXe.js";
-					script.onload = () => {
-						reactDiv.innerHTML = "✅ Main JS file loads";
-					};
-					script.onerror = () => {
-						reactDiv.innerHTML = "❌ Main JS file failed to load - path issue";
-					};
-					document.head.appendChild(script);
-				} catch (error) {
-					reactDiv.innerHTML = "❌ Error: " + error.message;
-				}
+			function testAssets() {
+				const resultsDiv = document.getElementById("asset-results");
+				resultsDiv.innerHTML = "<p>⏳ Testing assets...</p>";
+
+				const tests = [
+					{ name: "CSS File", url: "/assets/index-cvZfW9Pb.css" },
+					{ name: "JS File", url: "/assets/index-QRkY5-7n.js" },
+					{ name: "Logo", url: "/logo_transparent.png" },
+				];
+
+				let results = "";
+				let completed = 0;
+
+				tests.forEach((test) => {
+					fetch(test.url)
+						.then((response) => {
+							if (response.ok) {
+								results += `<p>✅ ${test.name}: OK (${response.status})</p>`;
+							} else {
+								results += `<p>❌ ${test.name}: Failed (${response.status})</p>`;
+							}
+						})
+						.catch((error) => {
+							results += `<p>❌ ${test.name}: Error - ${error.message}</p>`;
+						})
+						.finally(() => {
+							completed++;
+							if (completed === tests.length) {
+								resultsDiv.innerHTML = results;
+							}
+						});
+				});
+			}
+
+			// Test CSS loading
+			function testCSS() {
+				const link = document.createElement("link");
+				link.rel = "stylesheet";
+				link.href = "/assets/index-cvZfW9Pb.css";
+				link.onload = () => {
+					document.getElementById("css-test").innerHTML = "✅ CSS loads";
+				};
+				link.onerror = () => {
+					document.getElementById("css-test").innerHTML =
+						"❌ CSS failed to load";
+				};
+				document.head.appendChild(link);
+			}
+
+			// Test JS loading
+			function testJS() {
+				const script = document.createElement("script");
+				script.src = "/assets/index-QRkY5-7n.js";
+				script.onload = () => {
+					document.getElementById("js-test").innerHTML = "✅ JS loads";
+				};
+				script.onerror = () => {
+					document.getElementById("js-test").innerHTML = "❌ JS failed to load";
+				};
+				document.head.appendChild(script);
 			}
 
 			// Auto-run tests
 			setTimeout(() => {
+				testCSS();
+				testJS();
 				console.log("Debug page loaded successfully");
 				console.log("Base URL:", document.baseURI);
 				console.log("Current URL:", window.location.href);
