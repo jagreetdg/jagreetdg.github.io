@@ -1,0 +1,46 @@
+{
+	"name": "ripply-waitlist",
+	"version": "1.0.0",
+	"description": "Ripply Waitlist Page - Standalone deployment for GitHub Pages",
+	"type": "module",
+	"private": false,
+	"main": "index.js",
+	"homepage": "https://yourusername.github.io/ripply-waitlist",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d dist"
+	},
+	"dependencies": {
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"framer-motion": "^11.15.0",
+		"lucide-react": "^0.468.0",
+		"clsx": "^2.1.1",
+		"tailwind-merge": "^2.5.4",
+		"class-variance-authority": "^0.7.1",
+		"@radix-ui/react-slot": "^1.2.3"
+	},
+	"devDependencies": {
+		"@types/react": "^18.3.12",
+		"@types/react-dom": "^18.3.1",
+		"@vitejs/plugin-react": "^4.3.4",
+		"autoprefixer": "^10.4.20",
+		"gh-pages": "^6.2.0",
+		"postcss": "^8.5.1",
+		"tailwindcss": "^3.4.17",
+		"typescript": "^5.6.3",
+		"vite": "^5.4.11"
+	},
+	"keywords": [
+		"react",
+		"waitlist",
+		"ripply",
+		"voice-notes",
+		"landing-page"
+	],
+	"author": "Ripply Team",
+	"license": "MIT"
+}
