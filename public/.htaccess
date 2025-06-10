@@ -1,0 +1,22 @@
+# Fix MIME types for JavaScript modules
+AddType application/javascript .js
+AddType application/javascript .mjs
+AddType text/javascript .js
+AddType text/javascript .mjs
+
+# Enable CORS for assets
+<FilesMatch "\.(js|mjs|css|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$">
+    Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
+
+# Cache static assets
+<FilesMatch "\.(js|mjs|css|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$">
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+</FilesMatch>
+
+# Prevent access to source maps in production
+<FilesMatch "\.map$">
+    Order allow,deny
+    Deny from all
+</FilesMatch> 
