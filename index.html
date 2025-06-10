@@ -46,6 +46,16 @@
 		<!-- Theme Color -->
 		<meta name="theme-color" content="#1e0a3e" />
 
+		<!-- Security Meta Tags -->
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="upgrade-insecure-requests"
+		/>
+		<meta
+			http-equiv="Strict-Transport-Security"
+			content="max-age=31536000; includeSubDomains; preload"
+		/>
+
 		<style>
 			/* Prevent white overscroll background */
 			html,
@@ -140,6 +150,20 @@
 
 		<!-- Main React app container -->
 		<div id="root"></div>
+
+		<script>
+			// Force HTTPS redirect
+			if (
+				location.protocol !== "https:" &&
+				location.hostname !== "localhost" &&
+				location.hostname !== "127.0.0.1"
+			) {
+				location.replace(
+					"https:" +
+						window.location.href.substring(window.location.protocol.length)
+				);
+			}
+		</script>
 
 		<script type="module" crossorigin src="/src/main.tsx"></script>
 

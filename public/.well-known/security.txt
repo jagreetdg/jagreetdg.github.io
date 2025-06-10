@@ -1,0 +1,5 @@
+Contact: https://ripplyapp.me
+Preferred-Languages: en, ja
+Canonical: https://ripplyapp.me/.well-known/security.txt
+Policy: https://ripplyapp.me
+Hiring: https://ripplyapp.me 
