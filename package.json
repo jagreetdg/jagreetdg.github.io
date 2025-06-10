@@ -5,13 +5,14 @@
 	"type": "module",
 	"private": false,
 	"main": "index.js",
-	"homepage": "https://yourusername.github.io/ripply-waitlist",
+	"homepage": "https://jagreetdg.github.io",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
 		"preview": "vite preview",
 		"predeploy": "npm run build",
-		"deploy": "gh-pages -d dist"
+		"deploy": "gh-pages -d dist",
+		"build-and-deploy": "npm run build && npm run deploy"
 	},
 	"dependencies": {
 		"react": "^18.3.1",
