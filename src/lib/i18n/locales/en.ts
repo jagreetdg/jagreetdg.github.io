@@ -3,8 +3,8 @@ import { Translations } from '../types';
 export const en: Translations = {
   comingSoon: {
     title: 'Ripply',
-    subtitle: 'New experiences through voice notes',
-    description: 'Your voice creates new ripples of connection with others. Experience the innovative world of voice memos with Ripply.',
+    subtitle: 'What\'s on your mind today?',
+    description: 'Some words can’t type, some voices glow — no more filters, let Ripply show !',
     comingSoon: 'Coming Soon',
     features: [
       'Intuitive voice recording',

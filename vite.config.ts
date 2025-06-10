@@ -5,8 +5,7 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // For GitHub User Pages (username.github.io), base should be '/'
-  base: '/',
+  base: '/ripply-waitlist/', // Change this to your GitHub repo name
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -16,11 +15,6 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      },
-    },
   },
   server: {
     port: 3000,

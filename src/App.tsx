@@ -9,9 +9,8 @@ import {
 	useComingSoonTranslations,
 	LanguageProvider,
 } from "./context/LanguageContext";
-
-// Use Vite's import.meta.url for public assets
-const logoTransparent = "/logo_transparent.png";
+import logoTransparent from "/logo_transparent.png";
+import { brevoService } from "./services/brevo";
 
 interface RippleState {
 	key: number;
@@ -314,37 +313,37 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 			</div>
 
 			{/* Language switcher */}
-			<div className="absolute top-6 right-6 z-20">
+			<div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
 				<LanguageSwitcher />
 			</div>
 
 			{/* Main content */}
-			<div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+			<div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-6 py-8 sm:py-12">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
-					className="max-w-4xl mx-auto text-center"
+					className="max-w-4xl mx-auto text-center w-full"
 				>
 					{/* Logo/Title */}
 					<motion.div
 						initial={{ scale: 0.8, opacity: 0 }}
 						animate={{ scale: 1, opacity: 1 }}
 						transition={{ delay: 0.2, duration: 0.6 }}
-						className="mb-8 w-full"
+						className="mb-6 sm:mb-8 w-full"
 					>
-						<div className="flex items-center justify-center gap-3 mb-4 w-full">
+						<div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 w-full -ml-0.5 sm:-ml-1">
 							<img
 								src={logoTransparent}
 								alt="Ripply Logo"
-								className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16"
+								className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16"
 							/>
-							<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-none">
+							<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-none">
 								{t.title}
 							</h1>
 						</div>
 						<div className="flex justify-center w-full">
-							<div className="w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80 h-1 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full" />
+							<div className="w-32 sm:w-48 md:w-56 lg:w-64 xl:w-72 h-0.5 sm:h-1 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full" />
 						</div>
 					</motion.div>
 
@@ -353,7 +352,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.4, duration: 0.6 }}
-						className="text-2xl md:text-3xl text-purple-100 mb-6 font-light"
+						className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-purple-100 mb-4 sm:mb-6 font-light px-2"
 					>
 						{t.subtitle}
 					</motion.h2>
@@ -363,7 +362,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.6, duration: 0.6 }}
-						className="text-lg md:text-xl text-purple-200 mb-8 max-w-2xl mx-auto leading-relaxed"
+						className="text-sm sm:text-base md:text-lg lg:text-xl text-purple-200 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-2"
 					>
 						{t.description}
 					</motion.p>
@@ -373,9 +372,9 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, scale: 0.8 }}
 						animate={{ opacity: 1, scale: 1 }}
 						transition={{ delay: 0.8, duration: 0.6 }}
-						className="inline-block mb-8"
+						className="inline-block mb-6 sm:mb-8"
 					>
-						<span className="px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full text-sm font-medium shadow-lg">
+						<span className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full text-xs sm:text-sm font-medium shadow-lg">
 							{t.comingSoon}
 						</span>
 					</motion.div>
@@ -385,7 +384,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 1.0, duration: 0.6 }}
-						className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-3xl mx-auto"
+						className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12 max-w-3xl mx-auto px-2"
 					>
 						{t.features.map((feature, index) => (
 							<motion.div
@@ -393,9 +392,11 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 1.2 + index * 0.1, duration: 0.6 }}
-								className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+								className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20"
 							>
-								<p className="text-white/90 text-sm">{feature}</p>
+								<p className="text-white/90 text-xs sm:text-sm leading-relaxed">
+									{feature}
+								</p>
 							</motion.div>
 						))}
 					</motion.div>
@@ -405,7 +406,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 1.4, duration: 0.6 }}
-						className="max-w-md mx-auto"
+						className="max-w-md mx-auto px-2"
 					>
 						<AnimatePresence mode="wait">
 							{formState.status === "success" ? (
@@ -416,9 +417,9 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 									exit={{ opacity: 0, scale: 0.8 }}
 									className="text-center"
 								>
-									<div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+									<div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
 										<svg
-											className="w-8 h-8 text-white"
+											className="w-6 h-6 sm:w-8 sm:h-8 text-white"
 											fill="none"
 											stroke="currentColor"
 											viewBox="0 0 24 24"
@@ -431,7 +432,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 											/>
 										</svg>
 									</div>
-									<p className="text-white text-lg font-medium">
+									<p className="text-white text-base sm:text-lg font-medium px-2">
 										{t.successMessage}
 									</p>
 								</motion.div>
@@ -439,12 +440,12 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 								<motion.form
 									key="form"
 									onSubmit={handleSubmit}
-									className="space-y-4"
+									className="space-y-3 sm:space-y-4"
 									initial={{ opacity: 0 }}
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 								>
-									<div className="flex flex-col sm:flex-row gap-3">
+									<div className="flex flex-col gap-3 sm:gap-3">
 										<Input
 											type="email"
 											value={formState.email}
@@ -455,7 +456,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 												}))
 											}
 											placeholder={t.emailPlaceholder}
-											className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:border-purple-400 focus:ring-purple-400"
+											className="w-full h-11 sm:h-12 bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:border-purple-400 focus:ring-purple-400 text-sm sm:text-base px-3 sm:px-4"
 											disabled={isLoading}
 											required
 										/>
@@ -463,11 +464,11 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 											type="submit"
 											disabled={isLoading}
 											onClick={createClickRipple}
-											className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 px-8 py-2 font-medium transition-all duration-200"
+											className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 w-full h-11 sm:h-12 font-medium transition-all duration-200 text-sm sm:text-base"
 										>
 											<span
 												className={cn(
-													"flex items-center",
+													"flex items-center justify-center",
 													isLoading && "text-transparent"
 												)}
 											>
@@ -506,7 +507,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 											initial={{ opacity: 0, y: 10 }}
 											animate={{ opacity: 1, y: 0 }}
 											className={cn(
-												"text-sm text-center",
+												"text-xs sm:text-sm text-center px-2",
 												formState.status === "error"
 													? "text-red-300"
 													: "text-green-300"
@@ -525,23 +526,10 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 	);
 }
 
-async function mockSubscribe(email: string) {
-	await new Promise((resolve) => setTimeout(resolve, 1500));
-
-	if (email.includes("error")) {
-		return {
-			success: false,
-			error: "An error occurred. Please try again.",
-		};
-	}
-
-	return { success: true };
-}
-
 function App() {
 	return (
 		<LanguageProvider>
-			<RipplyWaitlistPage onSubscribe={mockSubscribe} />
+			<RipplyWaitlistPage onSubscribe={brevoService.subscribeToWaitlist} />
 		</LanguageProvider>
 	);
 }
