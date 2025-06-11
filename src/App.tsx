@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import {
 	useComingSoonTranslations,
-	useLanguage,
 	LanguageProvider,
 } from "./context/LanguageContext";
 import logoTransparent from "/logo_transparent.png";
@@ -235,7 +234,6 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 	const isLoading = formState.status === "loading";
 	const t = useComingSoonTranslations();
-	const { language } = useLanguage();
 
 	const createClickRipple = useCallback((event: React.MouseEvent) => {
 		const rect = event.currentTarget.getBoundingClientRect();
