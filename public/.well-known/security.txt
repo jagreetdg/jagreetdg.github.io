@@ -1,5 +1,5 @@
-Contact: https://jagreetdg.github.io
+Contact: https://ripplyapp.me
 Expires: 2025-12-31T23:59:59.000Z
-Canonical: https://jagreetdg.github.io/.well-known/security.txt
-Policy: https://jagreetdg.github.io
-Hiring: https://jagreetdg.github.io 
+Canonical: https://ripplyapp.me/.well-known/security.txt
+Policy: https://ripplyapp.me
+Hiring: https://ripplyapp.me 

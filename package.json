@@ -5,7 +5,7 @@
 	"description": "Ripply Waitlist Page - Standalone deployment for GitHub Pages",
 	"type": "module",
 	"main": "index.js",
-	"homepage": "https://jagreetdg.github.io",
+	"homepage": "https://ripplyapp.me",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
