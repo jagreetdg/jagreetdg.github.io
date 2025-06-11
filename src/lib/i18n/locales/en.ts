@@ -4,7 +4,7 @@ export const en: Translations = {
   comingSoon: {
     title: 'Ripply',
     subtitle: 'What\'s on your mind today?',
-    description: 'Some words can’t type, some voices glow — \<\\br\> no more filters, let Ripply show !',
+    description: 'Some words can\'t type, some voices glow —\nno more filters, let Ripply show !',
     comingSoon: 'Coming Soon',
     features: [
       'Intuitive voice recording',

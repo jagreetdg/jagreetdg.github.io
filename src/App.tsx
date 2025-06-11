@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import {
 	useComingSoonTranslations,
+	useLanguage,
 	LanguageProvider,
 } from "./context/LanguageContext";
 import logoTransparent from "/logo_transparent.png";
@@ -234,6 +235,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 	const isLoading = formState.status === "loading";
 	const t = useComingSoonTranslations();
+	const { language } = useLanguage();
 
 	const createClickRipple = useCallback((event: React.MouseEvent) => {
 		const rect = event.currentTarget.getBoundingClientRect();
@@ -364,20 +366,28 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.4, duration: 0.6 }}
 						className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-purple-100 mb-4 sm:mb-6 px-2"
-						style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 600 }}
+						style={
+							language === "en"
+								? { fontFamily: "'Dancing Script', cursive", fontWeight: 600 }
+								: { fontWeight: 500 }
+						}
 					>
 						{t.subtitle}
 					</motion.h2>
 
 					{/* Description */}
-					<motion.p
+					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.6, duration: 0.6 }}
 						className="text-sm sm:text-base md:text-lg lg:text-xl text-purple-200 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-2"
 					>
-						{t.description}
-					</motion.p>
+						{t.description.split("\n").map((line, index) => (
+							<p key={index} className={index > 0 ? "mt-2" : ""}>
+								{line}
+							</p>
+						))}
+					</motion.div>
 
 					{/* Coming Soon Badge */}
 					<motion.div
