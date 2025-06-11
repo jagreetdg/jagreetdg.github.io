@@ -537,6 +537,24 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 							)}
 						</AnimatePresence>
 					</motion.div>
+
+					{/* Footer */}
+					<motion.footer
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 1.6, duration: 0.6 }}
+						className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-white/10"
+					>
+						<div className="text-center space-y-2">
+							<p className="text-xs sm:text-sm text-white/60">
+								© {new Date().getFullYear()} Ripply. All rights reserved.
+							</p>
+							<p className="text-xs text-white/50">
+								Developed by{" "}
+								<span className="text-purple-300 font-medium">Vycera</span>
+							</p>
+						</div>
+					</motion.footer>
 				</motion.div>
 			</div>
 		</div>
