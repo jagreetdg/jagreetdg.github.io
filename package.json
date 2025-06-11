@@ -1,14 +1,15 @@
 {
 	"name": "ripply-waitlist",
-	"version": "1.0.0",
+	"private": true,
+	"version": "0.0.0",
 	"description": "Ripply Waitlist Page - Standalone deployment for GitHub Pages",
 	"type": "module",
-	"private": false,
 	"main": "index.js",
-	"homepage": "https://ripplyapp.me",
+	"homepage": "https://jagreetdg.github.io",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
+		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview",
 		"predeploy": "npm run build",
 		"deploy": "gh-pages -d dist",
