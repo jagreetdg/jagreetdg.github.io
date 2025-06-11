@@ -365,7 +365,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.4, duration: 0.6 }}
-						className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-purple-100 mb-4 sm:mb-6 px-2"
+						className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-purple-100 mb-4 sm:mb-6 px-2"
 						style={{
 							fontFamily: "'Dancing Script', cursive",
 							fontWeight: 600,
