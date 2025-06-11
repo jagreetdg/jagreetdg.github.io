@@ -3,7 +3,7 @@ import { Translations } from '../types';
 export const en: Translations = {
   comingSoon: {
     title: 'Ripply',
-    subtitle: 'What\'s on your mind today?',
+    subtitle: 'Your Voice. Your Vibe.',
     description: 'Some words can\'t type, some voices glow —\nno more filters, let Ripply show !',
     comingSoon: 'Coming Soon',
     features: [

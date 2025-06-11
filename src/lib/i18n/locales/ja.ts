@@ -3,7 +3,7 @@ import { Translations } from '../types';
 export const ja: Translations = {
   comingSoon: {
     title: 'Ripply',
-    subtitle: '今日は何考えてるの？',
+    subtitle: 'Your Voice. Your Vibe.',
     description: '文字にできない声がある？フィルター捨てて、Ripplyで光る',
     comingSoon: '近日公開',
     features: [

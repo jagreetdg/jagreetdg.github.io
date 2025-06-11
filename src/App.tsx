@@ -365,12 +365,11 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 0.4, duration: 0.6 }}
-						className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-purple-100 mb-4 sm:mb-6 px-2"
-						style={
-							language === "en"
-								? { fontFamily: "'Dancing Script', cursive", fontWeight: 600 }
-								: { fontWeight: 500 }
-						}
+						className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-purple-100 mb-4 sm:mb-6 px-2"
+						style={{
+							fontFamily: "'Dancing Script', cursive",
+							fontWeight: 600,
+						}}
 					>
 						{t.subtitle}
 					</motion.h2>
