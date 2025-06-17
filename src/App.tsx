@@ -5,9 +5,6 @@ import { Input } from "@/components/ui/input";
 import {
 	ArrowRight,
 	LoaderCircle,
-	Sparkles,
-	TrendingUp,
-	Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
