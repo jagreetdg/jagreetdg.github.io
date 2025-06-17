@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, LoaderCircle } from "lucide-react";
+import {
+	ArrowRight,
+	LoaderCircle,
+	Sparkles,
+	TrendingUp,
+	Star,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import {
@@ -11,6 +17,11 @@ import {
 } from "./context/LanguageContext";
 import logoTransparent from "/logo_transparent.png";
 import { brevoService } from "./services/brevo";
+import DisplayCards from "@/components/ui/display-cards";
+import {
+	StaticVoiceNoteCard,
+	StaticVoiceNote,
+} from "@/components/ui/StaticVoiceNoteCard";
 
 interface RippleState {
 	key: number;
@@ -235,6 +246,58 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 	const isLoading = formState.status === "loading";
 	const t = useComingSoonTranslations();
 
+	// Japanese mock data for the VoiceNoteCards
+	const mockVoiceNotes: StaticVoiceNote[] = [
+		{
+			id: "1",
+			title: "今日の天気と気分",
+			user: {
+				username: "yuki_tanaka",
+				display_name: "ユキ",
+				avatar_url:
+					"https://images.pexels.com/photos/4307884/pexels-photo-4307884.jpeg?auto=compress&cs=tinysrgb&w=800",
+			},
+			likes: 180,
+			comments: 22,
+			reposts: 15,
+			plays: 620,
+			backgroundImage:
+				"https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&q=80",
+		},
+		{
+			id: "2",
+			title: "私の朝の日課",
+			user: {
+				username: "haruto_k",
+				display_name: "ハルト",
+				avatar_url:
+					"https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=800",
+			},
+			likes: 320,
+			comments: 45,
+			reposts: 30,
+			plays: 1200,
+			backgroundImage:
+				"https://images.unsplash.com/photo-1507525428034-b723a9ce6890?auto=format&fit=crop&q=80",
+		},
+		{
+			id: "3",
+			title: "夜の散歩は最高",
+			user: {
+				username: "mei_suzuki",
+				display_name: "メイ",
+				avatar_url:
+					"https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=800",
+			},
+			likes: 450,
+			comments: 68,
+			reposts: 55,
+			plays: 2500,
+			backgroundImage:
+				"https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+		},
+	];
+
 	const createClickRipple = useCallback((event: React.MouseEvent) => {
 		const rect = event.currentTarget.getBoundingClientRect();
 		const size = Math.max(rect.width, rect.height) * 2;
@@ -403,21 +466,21 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: 1.0, duration: 0.6 }}
-						className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12 max-w-3xl mx-auto px-2"
+						className="mb-8 sm:mb-12 max-w-4xl mx-auto px-2"
 					>
-						{t.features.map((feature, index) => (
-							<motion.div
-								key={feature}
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: 1.2 + index * 0.1, duration: 0.6 }}
-								className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20"
-							>
-								<p className="text-white/90 text-xs sm:text-sm leading-relaxed">
-									{feature}
-								</p>
-							</motion.div>
-						))}
+						{/* Featured Cards Display */}
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 1.2, duration: 0.6 }}
+							className="relative w-full flex justify-center items-center py-8 md:py-12 lg:py-16 -translate-x-8 sm:-translate-x-10 md:-translate-x-12 lg:-translate-x-14"
+						>
+							<DisplayCards>
+								{mockVoiceNotes.map((note) => (
+									<StaticVoiceNoteCard key={note.id} voiceNote={note} />
+								))}
+							</DisplayCards>
+						</motion.div>
 					</motion.div>
 
 					{/* Waitlist Form */}
