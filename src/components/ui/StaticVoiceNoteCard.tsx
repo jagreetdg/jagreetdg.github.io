@@ -1,4 +1,3 @@
-import React from "react";
 import { Play, Heart, MessageCircle, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
 
