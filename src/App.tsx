@@ -2,15 +2,13 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-	ArrowRight,
-	LoaderCircle,
-} from "lucide-react";
+import { ArrowRight, LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import {
 	useComingSoonTranslations,
 	LanguageProvider,
+	useVoiceNoteTranslations,
 } from "./context/LanguageContext";
 import logoTransparent from "/logo_transparent.png";
 import { brevoService } from "./services/brevo";
@@ -242,58 +240,31 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 	const isLoading = formState.status === "loading";
 	const t = useComingSoonTranslations();
+	const t_voice = useVoiceNoteTranslations();
 
-	// Japanese mock data for the VoiceNoteCards
-	const mockVoiceNotes: StaticVoiceNote[] = [
-		{
-			id: "1",
-			title: "今日の天気と気分",
+	const mockVoiceNotes: StaticVoiceNote[] =
+		t_voice?.map((voiceNote, index) => ({
+			id: `${index + 1}`,
+			title: voiceNote.title,
 			user: {
-				username: "yuki_tanaka",
-				display_name: "ユキ",
-				avatar_url:
+				username: voiceNote.user.username,
+				display_name: voiceNote.user.display_name,
+				avatar_url: [
 					"https://images.pexels.com/photos/4307884/pexels-photo-4307884.jpeg?auto=compress&cs=tinysrgb&w=800",
-			},
-			likes: 180,
-			comments: 22,
-			reposts: 15,
-			plays: 620,
-			backgroundImage:
-				"https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&q=80",
-		},
-		{
-			id: "2",
-			title: "私の朝の日課",
-			user: {
-				username: "haruto_k",
-				display_name: "ハルト",
-				avatar_url:
 					"https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=800",
-			},
-			likes: 320,
-			comments: 45,
-			reposts: 30,
-			plays: 1200,
-			backgroundImage:
-				"https://images.unsplash.com/photo-1507525428034-b723a9ce6890?auto=format&fit=crop&q=80",
-		},
-		{
-			id: "3",
-			title: "夜の散歩は最高",
-			user: {
-				username: "mei_suzuki",
-				display_name: "メイ",
-				avatar_url:
 					"https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=800",
+				][index],
 			},
-			likes: 450,
-			comments: 68,
-			reposts: 55,
-			plays: 2500,
-			backgroundImage:
+			likes: [180, 320, 450][index],
+			comments: [22, 45, 68][index],
+			reposts: [15, 30, 55][index],
+			plays: [620, 1200, 2500][index],
+			backgroundImage: [
+				"https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&q=80",
+				"https://images.unsplash.com/photo-1507525428034-b723a9ce6890?auto=format&fit=crop&q=80",
 				"https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-		},
-	];
+			][index],
+		})) || [];
 
 	const createClickRipple = useCallback((event: React.MouseEvent) => {
 		const rect = event.currentTarget.getBoundingClientRect();
@@ -470,7 +441,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: 1.2, duration: 0.6 }}
-							className="relative w-full flex justify-center items-center py-8 md:py-12 lg:py-16 -translate-x-8 sm:-translate-x-10 md:-translate-x-12 lg:-translate-x-14"
+							className="relative w-full flex justify-center items-center py-8 md:py-12 lg:py-16"
 						>
 							<DisplayCards>
 								{mockVoiceNotes.map((note) => (

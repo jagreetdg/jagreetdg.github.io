@@ -12,8 +12,17 @@ export interface ComingSoonTranslations {
   errorMessage: string;
 }
 
+export interface VoiceNoteTranslations {
+  title: string;
+  user: {
+    display_name: string;
+    username: string;
+  };
+}
+
 export interface Translations {
   comingSoon: ComingSoonTranslations;
+  voiceNotes: VoiceNoteTranslations[];
   // Add other page translations here as you expand
   // home: HomeTranslations;
   // profile: ProfileTranslations;
@@ -23,4 +32,4 @@ export interface I18nConfig {
   defaultLanguage: Language;
   supportedLanguages: Language[];
   fallbackLanguage: Language;
-} 
+}

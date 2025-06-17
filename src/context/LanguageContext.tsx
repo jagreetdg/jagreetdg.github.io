@@ -81,3 +81,9 @@ export function useComingSoonTranslations() {
 	const { translations } = useLanguage();
 	return translations.comingSoon;
 }
+
+// Hook for voice note card translations
+export function useVoiceNoteTranslations() {
+	const { translations } = useLanguage();
+	return translations.voiceNotes;
+}
