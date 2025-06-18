@@ -55,6 +55,29 @@ export default {
 			animation: {
 				pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
 				spin: "spin 1s linear infinite",
+				"shimmer-slide": "shimmer-slide var(--speed, 2s) ease-in-out infinite",
+				shimmer: "shimmer 3s ease-in-out infinite",
+			},
+			keyframes: {
+				"shimmer-slide": {
+					"0%": {
+						transform: "translateX(-100%)",
+					},
+					"100%": {
+						transform: "translateX(200%)",
+					},
+				},
+				shimmer: {
+					"0%": {
+						transform: "translateX(-100%) translateY(-100%) rotate(45deg)",
+					},
+					"50%": {
+						transform: "translateX(150%) translateY(-50%) rotate(45deg)",
+					},
+					"100%": {
+						transform: "translateX(-100%) translateY(-100%) rotate(45deg)",
+					},
+				},
 			},
 		},
 	},
@@ -67,6 +90,8 @@ export default {
 		// Animation classes
 		"animate-pulse",
 		"animate-spin",
+		"animate-shimmer-slide",
+		"animate-shimmer",
 		// Opacity classes used in animations
 		"opacity-0",
 		"opacity-10",

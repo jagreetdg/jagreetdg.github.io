@@ -16,14 +16,14 @@
 		"build-and-deploy": "npm run build && npm run deploy"
 	},
 	"dependencies": {
+		"@radix-ui/react-slot": "^1.2.3",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"framer-motion": "^11.18.2",
+		"lucide-react": "^0.468.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
-		"framer-motion": "^11.15.0",
-		"lucide-react": "^0.468.0",
-		"clsx": "^2.1.1",
-		"tailwind-merge": "^2.5.4",
-		"class-variance-authority": "^0.7.1",
-		"@radix-ui/react-slot": "^1.2.3"
+		"tailwind-merge": "^2.5.4"
 	},
 	"devDependencies": {
 		"@types/react": "^18.3.12",

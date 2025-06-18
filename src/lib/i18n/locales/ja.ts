@@ -4,7 +4,7 @@ export const ja: Translations = {
   comingSoon: {
     title: 'Ripply',
     subtitle: 'Your Voice. Your Vibe.',
-    description: '文字にできない声がある？フィルター捨てて、Ripplyで光る',
+    description: '文字にできない声がある？\nフィルター捨てて、 Ripplyで光る',
     comingSoon: '近日公開',
     features: [
       '直感的な音声録音',

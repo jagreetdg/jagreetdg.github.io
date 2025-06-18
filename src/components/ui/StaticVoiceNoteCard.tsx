@@ -37,7 +37,11 @@ export const StaticVoiceNoteCard = React.memo(function StaticVoiceNoteCard({
 	const backgroundStyle = useMemo(
 		() => ({
 			...(voiceNote.backgroundImage
-				? { backgroundImage: `url(${voiceNote.backgroundImage})` }
+				? {
+						backgroundImage: `url(${voiceNote.backgroundImage})`,
+						backgroundBlendMode: "overlay" as const,
+						backgroundColor: "rgba(0, 0, 0, 0.5)",
+				  }
 				: { backgroundColor: `rgba(20, 15, 35, 1)` }),
 		}),
 		[voiceNote.backgroundImage]
@@ -69,7 +73,7 @@ export const StaticVoiceNoteCard = React.memo(function StaticVoiceNoteCard({
 	return (
 		<div
 			className={cn(
-				"relative h-24 w-[12rem] sm:h-28 sm:w-[14rem] md:h-32 md:w-[16rem] lg:h-36 lg:w-[18rem] -skew-y-[8deg] select-none transition-all duration-700",
+				"relative h-24 w-[12rem] sm:h-28 sm:w-[14rem] md:h-32 md:w-[16rem] lg:h-36 lg:w-[18rem] select-none transition-all duration-700",
 				className
 			)}
 		>
@@ -80,7 +84,7 @@ export const StaticVoiceNoteCard = React.memo(function StaticVoiceNoteCard({
 						style={{ ...backgroundStyle, opacity }}
 					>
 						<div
-							className="absolute inset-0 w-full h-full bg-black/60 rounded-[10.5px]"
+							className="absolute inset-0 w-full h-full bg-black/50 rounded-[10.5px]"
 							style={{ mixBlendMode: "multiply" }}
 						></div>
 						<div className="relative flex-grow flex flex-col justify-between">
