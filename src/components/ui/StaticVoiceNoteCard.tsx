@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import { Play, Heart, MessageCircle, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -26,16 +27,44 @@ export interface StaticVoiceNoteCardProps {
 	opacity?: number;
 }
 
-export function StaticVoiceNoteCard({
+// Memoize the component to prevent unnecessary re-renders
+export const StaticVoiceNoteCard = React.memo(function StaticVoiceNoteCard({
 	voiceNote,
 	className,
 	opacity = 0.85,
 }: StaticVoiceNoteCardProps) {
-	const backgroundStyle = {
-		...(voiceNote.backgroundImage
-			? { backgroundImage: `url(${voiceNote.backgroundImage})` }
-			: { backgroundColor: `rgba(20, 15, 35, 1)` }),
-	};
+	// Memoize background style calculation
+	const backgroundStyle = useMemo(
+		() => ({
+			...(voiceNote.backgroundImage
+				? { backgroundImage: `url(${voiceNote.backgroundImage})` }
+				: { backgroundColor: `rgba(20, 15, 35, 1)` }),
+		}),
+		[voiceNote.backgroundImage]
+	);
+
+	// Memoize formatted numbers to prevent recalculation
+	const formattedStats = useMemo(
+		() => ({
+			likes:
+				voiceNote.likes > 999
+					? `${(voiceNote.likes / 1000).toFixed(1)}k`
+					: voiceNote.likes.toString(),
+			comments:
+				voiceNote.comments > 999
+					? `${(voiceNote.comments / 1000).toFixed(1)}k`
+					: voiceNote.comments.toString(),
+			reposts:
+				voiceNote.reposts > 999
+					? `${(voiceNote.reposts / 1000).toFixed(1)}k`
+					: voiceNote.reposts.toString(),
+			plays:
+				voiceNote.plays > 999
+					? `${(voiceNote.plays / 1000).toFixed(1)}k`
+					: voiceNote.plays.toString(),
+		}),
+		[voiceNote.likes, voiceNote.comments, voiceNote.reposts, voiceNote.plays]
+	);
 
 	return (
 		<div
@@ -61,6 +90,12 @@ export function StaticVoiceNoteCard({
 										src={voiceNote.user.avatar_url || "/logo_transparent.png"}
 										alt={voiceNote.user.display_name}
 										className="w-5 h-5 rounded-full border border-white/20"
+										loading="lazy" // Lazy load avatar images
+										onError={(e) => {
+											// Fallback to logo if avatar fails to load
+											(e.target as HTMLImageElement).src =
+												"/logo_transparent.png";
+										}}
 									/>
 									<div className="flex-1 min-w-0 text-left">
 										<p className="text-[10px] font-bold truncate">
@@ -92,19 +127,19 @@ export function StaticVoiceNoteCard({
 								<div className="flex items-center justify-around w-full text-[9px] text-white/70">
 									<div className="flex items-center gap-0.5">
 										<Heart className="w-2 h-2" />
-										<span>{voiceNote.likes}</span>
+										<span>{formattedStats.likes}</span>
 									</div>
 									<div className="flex items-center gap-0.5">
 										<MessageCircle className="w-2 h-2" />
-										<span>{voiceNote.comments}</span>
+										<span>{formattedStats.comments}</span>
 									</div>
 									<div className="flex items-center gap-0.5">
 										<Play className="w-2 h-2" />
-										<span>{voiceNote.plays}</span>
+										<span>{formattedStats.plays}</span>
 									</div>
 									<div className="flex items-center gap-0.5">
 										<Repeat className="w-2 h-2" />
-										<span>{voiceNote.reposts}</span>
+										<span>{formattedStats.reposts}</span>
 									</div>
 								</div>
 							</div>
@@ -114,4 +149,4 @@ export function StaticVoiceNoteCard({
 			</div>
 		</div>
 	);
-}
+});

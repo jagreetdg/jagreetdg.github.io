@@ -1,22 +1,25 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+	useState,
+	useCallback,
+	useMemo,
+	useRef,
+	useEffect,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ArrowRight, LoaderCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import DisplayCards from "./components/ui/display-cards";
+import { StaticVoiceNoteCard } from "./components/ui/StaticVoiceNoteCard";
+import { LanguageDropdown } from "./components/ui/language-switcher";
 import {
-	useComingSoonTranslations,
 	LanguageProvider,
+	useComingSoonTranslations,
 	useVoiceNoteTranslations,
 } from "./context/LanguageContext";
-import logoTransparent from "/logo_transparent.png";
+import { cn } from "./lib/utils";
 import { brevoService } from "./services/brevo";
-import DisplayCards from "@/components/ui/display-cards";
-import {
-	StaticVoiceNoteCard,
-	StaticVoiceNote,
-} from "@/components/ui/StaticVoiceNoteCard";
+import logoTransparent from "/logo_transparent.png";
 
 interface RippleState {
 	key: number;
@@ -32,14 +35,16 @@ interface RippleEffectProps {
 	count?: number;
 }
 
-function RippleEffect({
+// Restore original RippleEffect with full complexity
+const RippleEffect = React.memo(function RippleEffect({
 	className,
 	color = "#4C1D95",
 	count = 3,
 }: RippleEffectProps) {
-	return (
-		<div className={cn("absolute inset-0 overflow-hidden", className)}>
-			{Array.from({ length: count }).map((_, i) => (
+	// Restore original complex animation elements
+	const rippleElements = useMemo(
+		() =>
+			Array.from({ length: count }).map((_, i) => (
 				<motion.div
 					key={i}
 					className="absolute border-2 opacity-20"
@@ -68,17 +73,27 @@ function RippleEffect({
 						ease: "easeInOut",
 					}}
 				/>
-			))}
+			)),
+		[count, color]
+	);
+
+	return (
+		<div className={cn("absolute inset-0 overflow-hidden", className)}>
+			{rippleElements}
 		</div>
 	);
-}
+});
 
 interface WaveBackgroundProps {
 	className?: string;
 }
 
-function WaveBackground({ className }: WaveBackgroundProps) {
+// Optimized WaveBackground with restored visual quality
+const WaveBackground = React.memo(function WaveBackground({
+	className,
+}: WaveBackgroundProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const animationFrameRef = useRef<number>();
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -91,7 +106,7 @@ function WaveBackground({ className }: WaveBackgroundProps) {
 			height: number,
 			imageData: ImageData,
 			data: Uint8ClampedArray;
-		const SCALE = 2;
+		const SCALE = 2; // Back to original scale for quality
 
 		const resizeCanvas = () => {
 			canvas.width = window.innerWidth;
@@ -102,11 +117,16 @@ function WaveBackground({ className }: WaveBackgroundProps) {
 			data = imageData.data;
 		};
 
-		window.addEventListener("resize", resizeCanvas);
+		const handleResize = () => {
+			resizeCanvas();
+		};
+
+		window.addEventListener("resize", handleResize);
 		resizeCanvas();
 
 		const startTime = Date.now();
 
+		// Restored original lookup tables for quality
 		const SIN_TABLE = new Float32Array(1024);
 		const COS_TABLE = new Float32Array(1024);
 		for (let i = 0; i < 1024; i++) {
@@ -127,6 +147,7 @@ function WaveBackground({ className }: WaveBackgroundProps) {
 			return COS_TABLE[index];
 		};
 
+		// Restored original complex wave rendering
 		const render = () => {
 			const time = (Date.now() - startTime) * 0.001;
 
@@ -135,10 +156,17 @@ function WaveBackground({ className }: WaveBackgroundProps) {
 					const centerX = width / 2;
 					const centerY = height / 2;
 
-					// Distance from center
+					// Distance from center - fix for perfect circles
 					const dx = x - centerX;
 					const dy = y - centerY;
-					const distance = Math.sqrt(dx * dx + dy * dy);
+
+					// Use aspect ratio to create perfect circles
+					const aspectRatio = width / height;
+					const normalizedDx = aspectRatio > 1 ? dx / aspectRatio : dx;
+					const normalizedDy = aspectRatio < 1 ? dy * aspectRatio : dy;
+					const distance = Math.sqrt(
+						normalizedDx * normalizedDx + normalizedDy * normalizedDy
+					);
 
 					// Create connected wavy ripple effect from center
 					const ripple1 = fastSin(distance * 0.12 - time * 2.5);
@@ -146,7 +174,7 @@ function WaveBackground({ className }: WaveBackgroundProps) {
 					const ripple3 = fastSin(distance * 0.05 - time * 1.2) * 0.4;
 
 					// Add flowing wave connections
-					const angle = Math.atan2(dy, dx);
+					const angle = Math.atan2(normalizedDy, normalizedDx);
 					const flowingWave1 =
 						fastSin(angle * 3 + distance * 0.06 + time * 0.8) * 0.4;
 					const flowingWave2 =
@@ -206,12 +234,17 @@ function WaveBackground({ className }: WaveBackgroundProps) {
 				);
 			}
 
-			requestAnimationFrame(render);
+			animationFrameRef.current = requestAnimationFrame(render);
 		};
 
 		render();
 
-		return () => window.removeEventListener("resize", resizeCanvas);
+		return () => {
+			window.removeEventListener("resize", handleResize);
+			if (animationFrameRef.current) {
+				cancelAnimationFrame(animationFrameRef.current);
+			}
+		};
 	}, []);
 
 	return (
@@ -220,7 +253,7 @@ function WaveBackground({ className }: WaveBackgroundProps) {
 			className={cn("absolute inset-0 w-full h-full", className)}
 		/>
 	);
-}
+});
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -230,7 +263,10 @@ interface RipplyWaitlistPageProps {
 	) => Promise<{ success: boolean; error?: string }>;
 }
 
-function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
+// Memoize the main component
+const RipplyWaitlistPage = React.memo(function RipplyWaitlistPage({
+	onSubscribe,
+}: RipplyWaitlistPageProps) {
 	const [formState, setFormState] = useState({
 		email: "",
 		status: "idle" as FormStatus,
@@ -242,29 +278,33 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 	const t = useComingSoonTranslations();
 	const t_voice = useVoiceNoteTranslations();
 
-	const mockVoiceNotes: StaticVoiceNote[] =
-		t_voice?.map((voiceNote, index) => ({
-			id: `${index + 1}`,
-			title: voiceNote.title,
-			user: {
-				username: voiceNote.user.username,
-				display_name: voiceNote.user.display_name,
-				avatar_url: [
-					"https://images.pexels.com/photos/4307884/pexels-photo-4307884.jpeg?auto=compress&cs=tinysrgb&w=800",
-					"https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=800",
-					"https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=800",
+	// Memoize mock voice notes data
+	const mockVoiceNotes = useMemo(
+		() =>
+			t_voice?.map((voiceNote, index) => ({
+				id: `${index + 1}`,
+				title: voiceNote.title,
+				user: {
+					username: voiceNote.user.username,
+					display_name: voiceNote.user.display_name,
+					avatar_url: [
+						"https://images.pexels.com/photos/4307884/pexels-photo-4307884.jpeg?auto=compress&cs=tinysrgb&w=400", // Reduced image size
+						"https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=400",
+						"https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=400",
+					][index],
+				},
+				likes: [180, 320, 450][index],
+				comments: [22, 45, 68][index],
+				reposts: [15, 30, 55][index],
+				plays: [620, 1200, 2500][index],
+				backgroundImage: [
+					"https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&q=80&w=400", // Reduced image size
+					"https://images.unsplash.com/photo-1507525428034-b723a9ce6890?auto=format&fit=crop&q=80&w=400",
+					"https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=400",
 				][index],
-			},
-			likes: [180, 320, 450][index],
-			comments: [22, 45, 68][index],
-			reposts: [15, 30, 55][index],
-			plays: [620, 1200, 2500][index],
-			backgroundImage: [
-				"https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&q=80",
-				"https://images.unsplash.com/photo-1507525428034-b723a9ce6890?auto=format&fit=crop&q=80",
-				"https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-			][index],
-		})) || [];
+			})) || [],
+		[t_voice]
+	);
 
 	const createClickRipple = useCallback((event: React.MouseEvent) => {
 		const rect = event.currentTarget.getBoundingClientRect();
@@ -289,48 +329,63 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 		}, 600);
 	}, []);
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!onSubscribe) {
-			setFormState((prev) => ({
-				...prev,
-				status: "success",
-				message: t.successMessage,
-			}));
-			return;
-		}
+	const handleSubmit = useCallback(
+		async (e: React.FormEvent) => {
+			e.preventDefault();
+			if (!onSubscribe) {
+				setFormState((prev) => ({
+					...prev,
+					status: "success",
+					message: t.successMessage,
+				}));
+				return;
+			}
 
-		setFormState((prev) => ({ ...prev, status: "loading", message: "" }));
+			setFormState((prev) => ({ ...prev, status: "loading", message: "" }));
 
-		try {
-			console.log("About to call onSubscribe with email:", formState.email);
-			const result = await onSubscribe(formState.email);
-			console.log("onSubscribe returned:", result);
+			try {
+				const result = await onSubscribe(formState.email);
 
-			if (!result.success) {
-				console.log("Subscription failed:", result.error);
+				if (!result.success) {
+					setFormState((prev) => ({
+						...prev,
+						status: "error",
+						message: result.error || t.errorMessage,
+					}));
+				} else {
+					setFormState({
+						email: "",
+						status: "success",
+						message: t.successMessage,
+					});
+				}
+			} catch (error) {
 				setFormState((prev) => ({
 					...prev,
 					status: "error",
-					message: result.error || t.errorMessage,
+					message: t.errorMessage,
 				}));
-			} else {
-				console.log("Subscription successful!");
-				setFormState({
-					email: "",
-					status: "success",
-					message: t.successMessage,
-				});
 			}
-		} catch (error) {
-			console.error("Exception in handleSubmit:", error);
-			setFormState((prev) => ({
-				...prev,
-				status: "error",
-				message: t.errorMessage,
-			}));
-		}
-	};
+		},
+		[formState.email, onSubscribe, t.errorMessage, t.successMessage]
+	);
+
+	// Optimized animation variants
+	const fadeInUp = useMemo(
+		() => ({
+			initial: { opacity: 0, y: 20 },
+			animate: { opacity: 1, y: 0 },
+		}),
+		[]
+	);
+
+	const scaleIn = useMemo(
+		() => ({
+			initial: { opacity: 0, scale: 0.8 },
+			animate: { opacity: 1, scale: 1 },
+		}),
+		[]
+	);
 
 	return (
 		<div
@@ -341,7 +396,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 				<WaveBackground />
 			</div>
 
-			{/* Subtle animated ripple effects */}
+			{/* Restored original ripple effects */}
 			<div className="absolute inset-0 pointer-events-none opacity-15">
 				<RippleEffect count={2} color="#4338CA" />
 				<div className="absolute top-1/3 left-1/5 w-32 h-32 opacity-30">
@@ -354,24 +409,22 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 			{/* Language switcher */}
 			<div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
-				<div className="border border-white/30 rounded-lg backdrop-blur-sm bg-white/10">
-					<LanguageSwitcher />
+				<div className="border border-white/30 rounded-lg backdrop-blur-sm bg-white/10 text-xs">
+					<LanguageDropdown className="text-xs" />
 				</div>
 			</div>
 
 			{/* Main content */}
 			<div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
 				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
+					{...fadeInUp}
+					transition={{ duration: 0.6 }} // Faster transition
 					className="max-w-4xl mx-auto text-center w-full px-4 sm:px-6"
 				>
 					{/* Logo/Title */}
 					<motion.div
-						initial={{ scale: 0.8, opacity: 0 }}
-						animate={{ scale: 1, opacity: 1 }}
-						transition={{ delay: 0.2, duration: 0.6 }}
+						{...scaleIn}
+						transition={{ delay: 0.1, duration: 0.4 }} // Faster transition
 						className="mb-6 sm:mb-8 w-full"
 					>
 						<div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 w-full -ml-0.5 sm:-ml-1">
@@ -379,6 +432,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 								src={logoTransparent}
 								alt="Ripply Logo"
 								className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16"
+								loading="eager" // Load logo immediately
 							/>
 							<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-none">
 								{t.title}
@@ -391,9 +445,8 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 					{/* Subtitle */}
 					<motion.h2
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.4, duration: 0.6 }}
+						{...fadeInUp}
+						transition={{ delay: 0.2, duration: 0.4 }}
 						className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-purple-100 mb-4 sm:mb-6 px-2"
 						style={{
 							fontFamily: "'Dancing Script', cursive",
@@ -405,10 +458,13 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 					{/* Description */}
 					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.6, duration: 0.6 }}
-						className="text-sm sm:text-base md:text-lg lg:text-xl text-purple-200 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-2"
+						{...fadeInUp}
+						transition={{ delay: 0.3, duration: 0.4 }}
+						className="text-xs sm:text-sm md:text-base lg:text-lg text-purple-200 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-2 font-medium"
+						style={{
+							fontFamily: "'Inter', system-ui, sans-serif",
+							letterSpacing: "0.3px",
+						}}
 					>
 						{t.description.split("\n").map((line, index) => (
 							<p key={index} className={index > 0 ? "mt-2" : ""}>
@@ -419,9 +475,8 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 					{/* Coming Soon Badge */}
 					<motion.div
-						initial={{ opacity: 0, scale: 0.8 }}
-						animate={{ opacity: 1, scale: 1 }}
-						transition={{ delay: 0.8, duration: 0.6 }}
+						{...scaleIn}
+						transition={{ delay: 0.4, duration: 0.4 }}
 						className="inline-block mb-6 sm:mb-8"
 					>
 						<span className="px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-purple-700 to-indigo-700 bg-opacity-80 text-white rounded-full text-xs sm:text-sm font-medium shadow-lg backdrop-blur-sm">
@@ -429,18 +484,15 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 						</span>
 					</motion.div>
 
-					{/* Features */}
+					{/* Features - Restored original rendering */}
 					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 1.0, duration: 0.6 }}
+						{...fadeInUp}
+						transition={{ delay: 0.5, duration: 0.4 }}
 						className="mb-8 sm:mb-12 max-w-4xl mx-auto px-2"
 					>
-						{/* Featured Cards Display */}
 						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: 1.2, duration: 0.6 }}
+							{...fadeInUp}
+							transition={{ delay: 0.6, duration: 0.4 }}
 							className="relative w-full flex justify-center items-center py-8 md:py-12 lg:py-16"
 						>
 							<DisplayCards>
@@ -453,17 +505,15 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 					{/* Waitlist Form */}
 					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 1.4, duration: 0.6 }}
+						{...fadeInUp}
+						transition={{ delay: 0.7, duration: 0.4 }}
 						className="max-w-md mx-auto px-4 sm:px-6"
 					>
 						<AnimatePresence mode="wait">
 							{formState.status === "success" ? (
 								<motion.div
 									key="success"
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
+									{...scaleIn}
 									exit={{ opacity: 0, scale: 0.8 }}
 									className="text-center"
 								>
@@ -488,12 +538,12 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 								<motion.form
 									key="form"
 									onSubmit={handleSubmit}
-									className="space-y-3 sm:space-y-4"
+									className="space-y-6 sm:space-y-8"
 									initial={{ opacity: 0 }}
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 								>
-									<div className="flex flex-col gap-3 sm:gap-3">
+									<div className="flex flex-col gap-6 sm:gap-8">
 										<Input
 											type="email"
 											value={formState.email}
@@ -552,8 +602,7 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 									{formState.message && (
 										<motion.p
-											initial={{ opacity: 0, y: 10 }}
-											animate={{ opacity: 1, y: 0 }}
+											{...fadeInUp}
 											className={cn(
 												"text-xs sm:text-sm text-center px-2",
 												formState.status === "error"
@@ -571,9 +620,8 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 
 					{/* Footer */}
 					<motion.footer
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 1.6, duration: 0.6 }}
+						{...fadeInUp}
+						transition={{ delay: 0.8, duration: 0.4 }}
 						className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-white/10"
 					>
 						<div className="text-center space-y-2">
@@ -590,15 +638,13 @@ function RipplyWaitlistPage({ onSubscribe }: RipplyWaitlistPageProps) {
 			</div>
 		</div>
 	);
-}
+});
 
 function App() {
-	const handleSubscribe = async (email: string) => {
-		console.log("App.handleSubscribe called with:", email);
+	const handleSubscribe = useCallback(async (email: string) => {
 		const result = await brevoService.subscribeToWaitlist(email);
-		console.log("App.handleSubscribe result:", result);
 		return result;
-	};
+	}, []);
 
 	return (
 		<LanguageProvider>

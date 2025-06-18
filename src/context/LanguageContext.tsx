@@ -1,16 +1,16 @@
-import {
+import React, {
 	createContext,
 	useContext,
 	useState,
-	useEffect,
 	ReactNode,
+	useMemo,
+	useCallback,
 } from "react";
 import {
 	Language,
 	Translations,
 	getTranslations,
 	isValidLanguage,
-	i18nConfig,
 } from "../lib/i18n";
 
 interface LanguageContextType {
@@ -24,49 +24,48 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 	undefined
 );
 
-const LANGUAGE_STORAGE_KEY = "ripply_language";
-
 interface LanguageProviderProps {
 	children: ReactNode;
 }
 
-export function LanguageProvider({ children }: LanguageProviderProps) {
-	const [language, setLanguageState] = useState<Language>(
-		i18nConfig.defaultLanguage
-	);
+export const LanguageProvider = React.memo(function LanguageProvider({
+	children,
+}: LanguageProviderProps) {
+	const [language, setLanguageState] = useState<Language>(() => {
+		if (typeof window !== "undefined") {
+			const stored = localStorage.getItem("ripply-language");
+			if (stored && isValidLanguage(stored)) {
+				return stored as Language;
+			}
+		}
+		return "en";
+	});
 
-	// Load saved language on mount
-	useEffect(() => {
-		const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-		if (savedLanguage && isValidLanguage(savedLanguage)) {
-			setLanguageState(savedLanguage);
+	const translations = useMemo(() => getTranslations(language), [language]);
+
+	const setLanguage = useCallback((newLanguage: Language) => {
+		setLanguageState(newLanguage);
+		if (typeof window !== "undefined") {
+			localStorage.setItem("ripply-language", newLanguage);
 		}
 	}, []);
 
-	const setLanguage = (newLanguage: Language) => {
-		try {
-			localStorage.setItem(LANGUAGE_STORAGE_KEY, newLanguage);
-		} catch (error) {
-			console.warn("Failed to save language:", error);
-		}
-		setLanguageState(newLanguage);
-	};
-
-	const translations = getTranslations(language);
-
-	const value: LanguageContextType = {
-		language,
-		setLanguage,
-		translations,
-		t: translations, // Shorthand
-	};
+	const contextValue = useMemo(
+		() => ({
+			language,
+			setLanguage,
+			translations,
+			t: translations, // Shorthand alias
+		}),
+		[language, setLanguage, translations]
+	);
 
 	return (
-		<LanguageContext.Provider value={value}>
+		<LanguageContext.Provider value={contextValue}>
 			{children}
 		</LanguageContext.Provider>
 	);
-}
+});
 
 export function useLanguage() {
 	const context = useContext(LanguageContext);
@@ -76,14 +75,12 @@ export function useLanguage() {
 	return context;
 }
 
-// Hook specifically for coming soon page
-export function useComingSoonTranslations() {
+export const useComingSoonTranslations = () => {
 	const { translations } = useLanguage();
-	return translations.comingSoon;
-}
+	return useMemo(() => translations.comingSoon, [translations.comingSoon]);
+};
 
-// Hook for voice note card translations
-export function useVoiceNoteTranslations() {
+export const useVoiceNoteTranslations = () => {
 	const { translations } = useLanguage();
-	return translations.voiceNotes;
-}
+	return useMemo(() => translations.voiceNotes, [translations.voiceNotes]);
+};
