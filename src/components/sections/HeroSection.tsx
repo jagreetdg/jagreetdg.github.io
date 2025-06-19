@@ -47,20 +47,25 @@ export const HeroSection = ({ fadeInUp }: HeroSectionProps) => {
 						loading="eager"
 					/>
 					<span className="flex-shrink-0">Your</span>
-					<RotatingText
-						texts={["Voice !", "Vibe !", "Ripply !"]}
-						mainClassName="inline-block flex-shrink-0"
-						staggerFrom="last"
-						initial={{ y: "100%" }}
-						animate={{ y: 0 }}
-						exit={{ y: "-120%" }}
-						staggerDuration={0.05}
-						splitLevelClassName="overflow-hidden"
-						transition={{ type: "spring", damping: 25, stiffness: 300 }}
-						rotationInterval={2500}
-						onAnimationComplete={handleSubtitleComplete}
-						customRenderer={renderRotatingWord}
-					/>
+					<div
+						className="inline-block flex-shrink-0 text-center"
+						style={{ width: "3.5em" }}
+					>
+						<RotatingText
+							texts={["Voice !", "Vibe !", "Ripply !"]}
+							mainClassName="inline-block"
+							staggerFrom="last"
+							initial={{ y: "100%" }}
+							animate={{ y: 0 }}
+							exit={{ y: "-120%" }}
+							staggerDuration={0.05}
+							splitLevelClassName="overflow-hidden"
+							transition={{ type: "spring", damping: 25, stiffness: 300 }}
+							rotationInterval={2500}
+							onAnimationComplete={handleSubtitleComplete}
+							customRenderer={renderRotatingWord}
+						/>
+					</div>
 				</div>
 			</motion.div>
 

@@ -54,9 +54,9 @@ export const RipplyVoiceNoteCard = React.memo(function RipplyVoiceNoteCard({
 				className
 			)}
 		>
-			{/* Semi-Transparent Card with More Visible Tint */}
+			{/* Semi-Transparent Card with Purple Border */}
 			<div
-				className="relative w-full h-full rounded-xl border-2 border-purple-500"
+				className="relative w-full h-full rounded-xl border-2 border-purple-700"
 				style={{
 					background: "rgba(50, 0, 84, 0.6)",
 				}}
@@ -81,8 +81,8 @@ export const RipplyVoiceNoteCard = React.memo(function RipplyVoiceNoteCard({
 								</div>
 							</div>
 							<div className="my-3">
-								<h3 className="text-sm font-semibold leading-tight text-white drop-shadow-lg">
-									{t.description.replace("\n", " ")}
+								<h3 className="text-sm font-semibold leading-tight text-white drop-shadow-lg whitespace-pre-line">
+									{t.description}
 								</h3>
 							</div>
 						</div>

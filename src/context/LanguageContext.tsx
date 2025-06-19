@@ -38,7 +38,7 @@ export const LanguageProvider = React.memo(function LanguageProvider({
 				return stored as Language;
 			}
 		}
-		return "en";
+		return "ja";
 	});
 
 	const translations = useMemo(() => getTranslations(language), [language]);

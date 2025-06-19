@@ -40,7 +40,7 @@ export const RipplyWaitlistPage = React.memo(function RipplyWaitlistPage({
 					transition={{ duration: 0.6 }}
 					className="max-w-4xl mx-auto text-center w-full px-4 sm:px-6"
 				>
-					<HeroSection fadeInUp={fadeInUp} scaleIn={scaleIn} />
+					<HeroSection fadeInUp={fadeInUp} />
 					<WaitlistForm
 						onSubscribe={onSubscribe}
 						fadeInUp={fadeInUp}

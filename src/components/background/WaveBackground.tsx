@@ -95,25 +95,45 @@ export const WaveBackground = ({ className }: WaveBackgroundProps) => {
 					const wave =
 						ripple1 + ripple2 + ripple3 + ripple4 + ripple5 + radialVariation;
 					const intensity = 0.4 + 0.6 * wave;
-					const baseVal = 0.12 + 0.18 * fastCos(distance * 0.01 + time * 0.3);
-					const purpleAccent = 0.45 * fastSin(distance * 0.08 + time * 0.2);
-					const redAccent = 0.35 * fastCos(distance * 0.07 + time * 0.15);
-					const blueAccent = 0.4 * fastSin(distance * 0.06 + time * 0.12);
 
+					// Color scheme using only purple, red, blue, pink and their combinations
+					const baseVal = 0.08 + 0.12 * fastCos(distance * 0.01 + time * 0.3);
+					const purpleAccent = 0.6 * fastSin(distance * 0.08 + time * 0.2);
+					const redAccent = 0.5 * fastCos(distance * 0.07 + time * 0.15);
+					const blueAccent = 0.55 * fastSin(distance * 0.06 + time * 0.12);
+					const pinkAccent = 0.4 * fastCos(distance * 0.05 + time * 0.18);
+
+					// Red channel: strong red + purple + pink contributions
 					const r =
 						Math.max(
 							0,
-							Math.min(1, baseVal + purpleAccent * 0.8 + redAccent * 1.2)
+							Math.min(
+								1,
+								baseVal +
+									redAccent * 1.4 +
+									purpleAccent * 0.8 +
+									pinkAccent * 1.2
+							)
 						) * intensity;
+
+					// Green channel: minimal, only from purple and pink
 					const g =
 						Math.max(
 							0,
-							Math.min(1, baseVal + purpleAccent * 0.4 + blueAccent * 0.3)
+							Math.min(1, baseVal * 0.3 + purpleAccent * 0.2 + pinkAccent * 0.4)
 						) * intensity;
+
+					// Blue channel: strong blue + purple contributions
 					const b =
 						Math.max(
 							0,
-							Math.min(1, baseVal + blueAccent * 1.4 + purpleAccent * 1.0)
+							Math.min(
+								1,
+								baseVal +
+									blueAccent * 1.5 +
+									purpleAccent * 1.0 +
+									pinkAccent * 0.3
+							)
 						) * intensity;
 
 					const index = (y * width + x) * 4;

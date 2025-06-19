@@ -160,11 +160,11 @@ export const WaitlistForm = ({
 									}))
 								}
 								placeholder={t.emailPlaceholder}
-								className="w-full h-11 sm:h-12 bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:border-purple-600 focus:ring-purple-600 text-sm sm:text-base px-3 sm:px-4"
+								className="w-full h-11 sm:h-12 bg-white/25 border-white/40 text-white placeholder:text-white/70 focus:border-purple-600 focus:ring-purple-600 text-sm sm:text-base px-3 sm:px-4"
 								disabled={isLoading}
 								required
 							/>
-							<div className="relative w-full max-w-60 mx-auto">
+							<div className="relative w-full max-w-80 mx-auto">
 								<ButtonCta
 									type="submit"
 									disabled={isLoading}
@@ -199,7 +199,7 @@ export const WaitlistForm = ({
 												width: ripple.size,
 												height: ripple.size,
 											}}
-											initial={{ scale: 0, opacity: ripple.opacity }}
+											initial={{ scale: 0, opacity: 0.4 }}
 											animate={{ scale: 1, opacity: 0 }}
 											transition={{ duration: 0.6, ease: "easeOut" }}
 										/>
@@ -208,15 +208,11 @@ export const WaitlistForm = ({
 							</div>
 						</div>
 
-						{formState.message && (
+						{formState.status === "error" && (
 							<motion.p
-								{...fadeInUp}
-								className={cn(
-									"text-xs sm:text-sm text-center px-2",
-									formState.status === "error"
-										? "text-red-300"
-										: "text-green-300"
-								)}
+								initial={{ opacity: 0, y: 10 }}
+								animate={{ opacity: 1, y: 0 }}
+								className="text-red-400 text-center text-sm px-2"
 							>
 								{formState.message}
 							</motion.p>

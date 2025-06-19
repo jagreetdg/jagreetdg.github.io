@@ -18,7 +18,7 @@ function ButtonCta({
 		<Button
 			variant="ghost"
 			className={cn(
-				"group relative w-1/2 h-12 px-4 rounded-lg overflow-hidden transition-all duration-500 !border-0 !outline-none focus-visible:!outline-none focus:!ring-0 focus-visible:!ring-0 focus-visible:!ring-offset-0",
+				"group relative w-3/5 h-12 px-6 rounded-lg overflow-hidden transition-all duration-500 !border-0 !outline-none focus-visible:!outline-none focus:!ring-0 focus-visible:!ring-0 focus-visible:!ring-offset-0",
 				className
 			)}
 			{...props}

@@ -105,7 +105,7 @@ export default function RotatingText({
 	};
 
 	return (
-		<div className={mainClassName}>
+		<div className={`${mainClassName} w-full`}>
 			<AnimatePresence mode="wait">
 				<motion.div
 					key={currentIndex}
@@ -113,7 +113,7 @@ export default function RotatingText({
 					initial="hidden"
 					animate="visible"
 					exit="exit"
-					className="flex"
+					className="flex justify-center w-full"
 				>
 					{letters.map((letter, index) => (
 						<div key={index} className={splitLevelClassName}>
