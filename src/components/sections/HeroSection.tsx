@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import BlurText from "../ui/BlurText";
 import RotatingText from "../ui/RotatingText";
+import { RipplyVoiceNoteCard } from "../ui/RipplyVoiceNoteCard";
 import { useComingSoonTranslations } from "../../context/LanguageContext";
 import logoTransparent from "/logo_transparent.png";
 
@@ -70,24 +70,15 @@ export const HeroSection = ({ fadeInUp, scaleIn }: HeroSectionProps) => {
 				</div>
 			</motion.div>
 
-			{/* Description with BlurText Animation - Smaller text with line breaks */}
+			{/* Voice Note Card with Description - appears after animation */}
 			{showDescription && (
-				<div className="text-xs sm:text-sm md:text-base text-purple-200 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-2 font-medium">
-					{t.description.split("\n").map((line, index) => (
-						<BlurText
-							key={index}
-							text={line}
-							delay={200 + index * 300}
-							animateBy="words"
-							direction="top"
-							className={index > 0 ? "mt-2" : ""}
-							style={{
-								fontFamily: "'Inter', system-ui, sans-serif",
-								letterSpacing: "0.3px",
-							}}
-						/>
-					))}
-				</div>
+				<motion.div
+					{...fadeInUp}
+					transition={{ delay: 0.5, duration: 0.8 }}
+					className="mb-8 mt-8"
+				>
+					<RipplyVoiceNoteCard />
+				</motion.div>
 			)}
 		</>
 	);
