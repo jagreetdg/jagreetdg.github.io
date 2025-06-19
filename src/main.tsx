@@ -56,8 +56,9 @@ try {
 		document.body.classList.add("react-loaded");
 	}, 100);
 } catch (error) {
-	console.error("Error during React initialization:", error);
-	console.error("Error stack:", error.stack);
+	const errorObj = error instanceof Error ? error : new Error(String(error));
+	console.error("Error during React initialization:", errorObj);
+	console.error("Error stack:", errorObj.stack);
 
 	// Show error in the DOM
 	const rootElement = document.getElementById("root");
@@ -65,9 +66,9 @@ try {
 		rootElement.innerHTML = `
       <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ff0000; color: white; padding: 20px; font-family: Arial; overflow: auto; z-index: 10000;">
         <h1>❌ React Initialization Failed</h1>
-        <h2>Error: ${error.message}</h2>
+        <h2>Error: ${errorObj.message}</h2>
         <pre style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; overflow: auto; white-space: pre-wrap;">${
-					error.stack
+					errorObj.stack || "No stack trace available"
 				}</pre>
         <p>Environment: ${import.meta?.env?.MODE || "unknown"}</p>
         <p>URL: ${window.location.href}</p>
