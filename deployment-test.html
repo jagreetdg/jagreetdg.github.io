@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ripply Deployment Test</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 0;
+				padding: 20px;
+				background: linear-gradient(
+					135deg,
+					#6b2fbc 0%,
+					#9d50e8 50%,
+					#4f46e5 100%
+				);
+				color: white;
+				min-height: 100vh;
+			}
+			.test-section {
+				background: rgba(255, 255, 255, 0.1);
+				padding: 20px;
+				border-radius: 10px;
+				margin: 20px 0;
+			}
+			.test-result {
+				margin: 10px 0;
+				padding: 10px;
+				border-radius: 5px;
+			}
+			.success {
+				background: rgba(0, 255, 0, 0.2);
+			}
+			.error {
+				background: rgba(255, 0, 0, 0.2);
+			}
+			.warning {
+				background: rgba(255, 255, 0, 0.2);
+			}
+			.test-button {
+				background: #4f46e5;
+				color: white;
+				border: none;
+				padding: 10px 20px;
+				border-radius: 5px;
+				cursor: pointer;
+				margin: 10px 0;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>🚀 Ripply Deployment Diagnostic</h1>
+
+		<div class="test-section">
+			<h2>Environment Info</h2>
+			<div id="env-info">
+				<p>URL: <span id="current-url"></span></p>
+				<p>User Agent: <span id="user-agent"></span></p>
+				<p>Timestamp: <span id="timestamp"></span></p>
+			</div>
+		</div>
+
+		<div class="test-section">
+			<h2>Asset Loading Test</h2>
+			<button class="test-button" onclick="testAssets()">
+				Test All Assets
+			</button>
+			<div id="asset-results"></div>
+		</div>
+
+		<div class="test-section">
+			<h2>Font Loading Test</h2>
+			<button class="test-button" onclick="testFonts()">
+				Test Font Loading
+			</button>
+			<div id="font-results"></div>
+			<div
+				style="
+					font-family: 'Dancing Script', cursive;
+					font-size: 24px;
+					margin-top: 10px;
+				"
+			>
+				Dancing Script Font Test Text
+			</div>
+		</div>
+
+		<div class="test-section">
+			<h2>Network Connectivity</h2>
+			<button class="test-button" onclick="testNetwork()">Test Network</button>
+			<div id="network-results"></div>
+		</div>
+
+		<div class="test-section">
+			<h2>JavaScript Console Errors</h2>
+			<div id="console-errors">Check browser console for any errors...</div>
+		</div>
+
+		<script>
+			// Initialize page
+			document.getElementById("current-url").textContent = window.location.href;
+			document.getElementById("user-agent").textContent = navigator.userAgent;
+			document.getElementById("timestamp").textContent =
+				new Date().toISOString();
+
+			// Test assets
+			async function testAssets() {
+				const resultsDiv = document.getElementById("asset-results");
+				resultsDiv.innerHTML = "<p>🔍 Testing assets...</p>";
+
+				const assets = [
+					{ name: "Logo", url: "/logo_transparent.png" },
+					{ name: "Main App Script", url: "/src/main.tsx" },
+					{ name: "CSS Styles", url: "/src/index.css" },
+				];
+
+				let results = "";
+
+				for (const asset of assets) {
+					try {
+						const response = await fetch(asset.url);
+						if (response.ok) {
+							results += `<div class="test-result success">✅ ${asset.name}: OK (${response.status})</div>`;
+						} else {
+							results += `<div class="test-result error">❌ ${asset.name}: Failed (${response.status})</div>`;
+						}
+					} catch (error) {
+						results += `<div class="test-result error">❌ ${asset.name}: Error - ${error.message}</div>`;
+					}
+				}
+
+				resultsDiv.innerHTML = results;
+			}
+
+			// Test fonts
+			async function testFonts() {
+				const resultsDiv = document.getElementById("font-results");
+				resultsDiv.innerHTML = "<p>🔍 Testing fonts...</p>";
+
+				let results = "";
+
+				// Test Google Fonts API
+				try {
+					const response = await fetch(
+						"https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap"
+					);
+					if (response.ok) {
+						results +=
+							'<div class="test-result success">✅ Google Fonts API: Accessible</div>';
+					} else {
+						results +=
+							'<div class="test-result error">❌ Google Fonts API: Failed</div>';
+					}
+				} catch (error) {
+					results += `<div class="test-result error">❌ Google Fonts API: Error - ${error.message}</div>`;
+				}
+
+				// Test font loading
+				if (document.fonts) {
+					try {
+						await document.fonts.load('16px "Dancing Script"');
+						const fontFace = [...document.fonts].find(
+							(font) => font.family === "Dancing Script"
+						);
+						if (fontFace) {
+							results +=
+								'<div class="test-result success">✅ Dancing Script: Loaded</div>';
+						} else {
+							results +=
+								'<div class="test-result warning">⚠️ Dancing Script: Not loaded (using fallback)</div>';
+						}
+					} catch (error) {
+						results += `<div class="test-result error">❌ Font loading error: ${error.message}</div>`;
+					}
+				} else {
+					results +=
+						'<div class="test-result warning">⚠️ Font loading API not supported</div>';
+				}
+
+				resultsDiv.innerHTML = results;
+			}
+
+			// Test network
+			async function testNetwork() {
+				const resultsDiv = document.getElementById("network-results");
+				resultsDiv.innerHTML = "<p>🔍 Testing network...</p>";
+
+				let results = "";
+
+				// Test connection
+				if (navigator.onLine) {
+					results +=
+						'<div class="test-result success">✅ Browser reports online</div>';
+				} else {
+					results +=
+						'<div class="test-result error">❌ Browser reports offline</div>';
+				}
+
+				// Test external connectivity
+				try {
+					const start = Date.now();
+					const response = await fetch(
+						"https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap",
+						{ method: "HEAD" }
+					);
+					const duration = Date.now() - start;
+					if (response.ok) {
+						results += `<div class="test-result success">✅ External connectivity: OK (${duration}ms)</div>`;
+					} else {
+						results +=
+							'<div class="test-result error">❌ External connectivity: Failed</div>';
+					}
+				} catch (error) {
+					results += `<div class="test-result error">❌ External connectivity: Error - ${error.message}</div>`;
+				}
+
+				resultsDiv.innerHTML = results;
+			}
+
+			// Capture console errors
+			const originalConsoleError = console.error;
+			let consoleErrors = [];
+
+			console.error = function (...args) {
+				consoleErrors.push(args.join(" "));
+				const errorsDiv = document.getElementById("console-errors");
+				errorsDiv.innerHTML =
+					"<h3>Captured Errors:</h3>" +
+					consoleErrors
+						.map((error) => `<div class="test-result error">${error}</div>`)
+						.join("");
+				originalConsoleError.apply(console, args);
+			};
+
+			// Auto-run tests after a short delay
+			setTimeout(() => {
+				testAssets();
+				testFonts();
+				testNetwork();
+			}, 1000);
+		</script>
+	</body>
+</html>

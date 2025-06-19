@@ -17,13 +17,21 @@
 			content="voice notes, voice memos, audio recording, social voice, ripply, coming soon"
 		/>
 
-		<!-- Google Fonts -->
+		<!-- Google Fonts - Non-blocking with fallback -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
+			media="print"
+			onload="this.media='all'"
 		/>
+		<noscript>
+			<link
+				href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap"
+				rel="stylesheet"
+			/>
+		</noscript>
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
@@ -247,10 +255,30 @@
 		<script type="module" crossorigin src="/src/main.tsx"></script>
 
 		<script>
-			// Hide loading screen after 8 seconds if React hasn't loaded (fallback)
+			// Font loading timeout - force load after 3 seconds
+			let fontLoadTimeout = setTimeout(() => {
+				console.log("Font loading timeout - continuing with fallback fonts");
+				// Font loading is taking too long, continue anyway
+			}, 3000);
+
+			// Clear font timeout when fonts load
+			if (document.fonts) {
+				document.fonts.ready
+					.then(() => {
+						clearTimeout(fontLoadTimeout);
+						console.log("Fonts loaded successfully");
+					})
+					.catch((error) => {
+						console.warn("Font loading failed:", error);
+						clearTimeout(fontLoadTimeout);
+					});
+			}
+
+			// Hide loading screen after 5 seconds if React hasn't loaded (reduced timeout)
 			setTimeout(() => {
 				const root = document.getElementById("root");
 				if (!root.hasChildNodes() || root.children.length === 0) {
+					console.log("React loading timeout - showing fallback");
 					const loadingScreen = document.getElementById("loading-screen");
 					const loadingText = loadingScreen.querySelector(".loading-text");
 					loadingText.innerHTML = `
@@ -269,12 +297,13 @@
 				} else {
 					document.body.classList.add("react-loaded");
 				}
-			}, 8000);
+			}, 5000); // Reduced from 8 seconds to 5 seconds
 
 			// Mark React as loaded when it mounts
 			const observer = new MutationObserver(() => {
 				const root = document.getElementById("root");
 				if (root && root.children.length > 0) {
+					console.log("React app mounted successfully");
 					// Add small delay for smooth transition
 					setTimeout(() => {
 						document.body.classList.add("react-loaded");
@@ -284,9 +313,18 @@
 			});
 			observer.observe(document.getElementById("root"), { childList: true });
 
-			// Preload logo for faster display
+			// Preload logo for faster display with error handling
 			const logoImg = new Image();
+			logoImg.onload = () => console.log("Logo preloaded successfully");
+			logoImg.onerror = () =>
+				console.warn("Logo preload failed - will try at runtime");
 			logoImg.src = "/logo_transparent.png";
+
+			// Error handling for unhandled rejections
+			window.addEventListener("unhandledrejection", (event) => {
+				console.error("Unhandled promise rejection:", event.reason);
+				// Don't prevent default to allow debugging, but log it
+			});
 		</script>
 	</body>
 </html>
