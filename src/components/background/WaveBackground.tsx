@@ -65,8 +65,10 @@ export const WaveBackground = ({ className }: WaveBackgroundProps) => {
 
 			for (let y = 0; y < height; y++) {
 				for (let x = 0; x < width; x++) {
+					// Position ripples to originate behind the voice note card
+					// Card appears roughly at center horizontally and slightly above center vertically
 					const centerX = width / 2;
-					const centerY = height / 2;
+					const centerY = height * 0.42; // Move center up to align with voice card position
 
 					const dx = x - centerX;
 					const dy = y - centerY;

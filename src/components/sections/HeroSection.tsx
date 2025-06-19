@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import RotatingText from "../ui/RotatingText";
 import { RipplyVoiceNoteCard } from "../ui/RipplyVoiceNoteCard";
-import { useComingSoonTranslations } from "../../context/LanguageContext";
 import logoTransparent from "/logo_transparent.png";
 
 interface HeroSectionProps {
@@ -10,14 +9,9 @@ interface HeroSectionProps {
 		initial: { opacity: number; y: number };
 		animate: { opacity: number; y: number };
 	};
-	scaleIn: {
-		initial: { opacity: number; scale: number };
-		animate: { opacity: number; scale: number };
-	};
 }
 
-export const HeroSection = ({ fadeInUp, scaleIn }: HeroSectionProps) => {
-	const t = useComingSoonTranslations();
+export const HeroSection = ({ fadeInUp }: HeroSectionProps) => {
 	const [showDescription, setShowDescription] = useState(false);
 
 	const handleSubtitleComplete = () => {
@@ -75,7 +69,7 @@ export const HeroSection = ({ fadeInUp, scaleIn }: HeroSectionProps) => {
 				<motion.div
 					{...fadeInUp}
 					transition={{ delay: 0.5, duration: 0.8 }}
-					className="mb-8 mt-8"
+					className="mb-8 mt-16"
 				>
 					<RipplyVoiceNoteCard />
 				</motion.div>
