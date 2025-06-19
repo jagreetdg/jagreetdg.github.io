@@ -252,13 +252,7 @@
 			}
 		</script>
 
-		<script>
-			console.log("About to load main module...");
-		</script>
 		<script type="module" src="/src/main.tsx"></script>
-		<script>
-			console.log("Main module script tag processed");
-		</script>
 
 		<script>
 			// Font loading timeout - force load after 3 seconds
@@ -280,7 +274,21 @@
 					});
 			}
 
-			// Hide loading screen after 5 seconds if React hasn't loaded (reduced timeout)
+			// Mark React as loaded when it mounts (primary method)
+			const observer = new MutationObserver(() => {
+				const root = document.getElementById("root");
+				if (root && root.children.length > 0) {
+					console.log("React app mounted successfully");
+					// Add small delay for smooth transition
+					setTimeout(() => {
+						document.body.classList.add("react-loaded");
+					}, 100);
+					observer.disconnect();
+				}
+			});
+			observer.observe(document.getElementById("root"), { childList: true });
+
+			// Fallback timeout - only show fallback if React really hasn't loaded after 10 seconds
 			setTimeout(() => {
 				const root = document.getElementById("root");
 				if (!root.hasChildNodes() || root.children.length === 0) {
@@ -301,23 +309,10 @@
 						ripples.style.display = "none";
 					}
 				} else {
+					console.log("React has already loaded, hiding loading screen");
 					document.body.classList.add("react-loaded");
 				}
-			}, 5000); // Reduced from 8 seconds to 5 seconds
-
-			// Mark React as loaded when it mounts
-			const observer = new MutationObserver(() => {
-				const root = document.getElementById("root");
-				if (root && root.children.length > 0) {
-					console.log("React app mounted successfully");
-					// Add small delay for smooth transition
-					setTimeout(() => {
-						document.body.classList.add("react-loaded");
-					}, 100);
-					observer.disconnect();
-				}
-			});
-			observer.observe(document.getElementById("root"), { childList: true });
+			}, 10000); // Increased to 10 seconds to give React more time
 
 			// Preload logo for faster display with error handling
 			const logoImg = new Image();
