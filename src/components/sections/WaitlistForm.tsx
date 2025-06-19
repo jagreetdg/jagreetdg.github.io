@@ -4,7 +4,6 @@ import { ArrowRight, LoaderCircle } from "lucide-react";
 import { ButtonCta } from "../ui/button-shiny";
 import { Input } from "../ui/input";
 import { useComingSoonTranslations } from "../../context/LanguageContext";
-import { cn } from "../../lib/utils";
 
 interface RippleState {
 	key: number;
