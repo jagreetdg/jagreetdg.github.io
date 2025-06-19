@@ -23,30 +23,21 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: false,
-    target: 'es2020', // Updated for better tree shaking
-    minify: 'esbuild', // Faster minification
-    cssCodeSplit: true, // Enable CSS code splitting
-    reportCompressedSize: false, // Disable gzip reporting for faster builds
+    sourcemap: true, // Enable sourcemaps for debugging
+    target: 'es2020',
+    minify: 'esbuild',
+    cssCodeSplit: false, // Disable CSS code splitting for simpler debugging
+    reportCompressedSize: false,
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        // Better chunk splitting for caching
+        // Simplified chunking
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          animations: ['framer-motion'],
-          ui: ['lucide-react', '@radix-ui/react-slot'],
-          utils: ['clsx', 'tailwind-merge', 'class-variance-authority'],
         },
         entryFileNames: 'assets/[name].[hash].js',
         chunkFileNames: 'assets/[name].[hash].js',
         assetFileNames: 'assets/[name].[hash].[ext]'
-      },
-      // Tree shaking optimization
-      treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        unknownGlobalSideEffects: false,
       },
     },
   },

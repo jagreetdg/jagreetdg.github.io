@@ -252,7 +252,13 @@
 			}
 		</script>
 
-		<script type="module" crossorigin src="/src/main.tsx"></script>
+		<script>
+			console.log("About to load main module...");
+		</script>
+		<script type="module" src="/src/main.tsx"></script>
+		<script>
+			console.log("Main module script tag processed");
+		</script>
 
 		<script>
 			// Font loading timeout - force load after 3 seconds
