@@ -14,7 +14,6 @@ export const HeroSection = ({ fadeInUp }: HeroSectionProps) => {
 	const [showDescription, setShowDescription] = useState(false);
 
 	const handleSubtitleComplete = () => {
-		console.log("Subtitle animation completed!");
 		setShowDescription(true);
 	};
 
