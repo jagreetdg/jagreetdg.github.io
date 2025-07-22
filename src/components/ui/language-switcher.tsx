@@ -52,7 +52,7 @@ export function LanguageDropdown({ className = "" }: { className?: string }) {
 			<select
 				value={language}
 				onChange={(e) => setLanguage(e.target.value as Language)}
-				className="bg-white/10 border border-white/20 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+				className="bg-white/10 border border-white/20 text-white rounded px-3 py-2 pr-7 focus:outline-none focus:ring-2 focus:ring-purple-400 appearance-none"
 			>
 				<option value="en" className="bg-purple-900 text-white">
 					English
@@ -61,6 +61,10 @@ export function LanguageDropdown({ className = "" }: { className?: string }) {
 					日本語
 				</option>
 			</select>
+			{/* Custom dropdown arrow */}
+			<span className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-xs">
+				▼
+			</span>
 		</div>
 	);
 }
