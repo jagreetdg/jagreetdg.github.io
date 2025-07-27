@@ -21,10 +21,14 @@ class BrevoService {
   private apiKey: string;
   private baseUrl = 'https://api.brevo.com/v3';
   private listId: number;
+  private useBackendProxy: boolean;
+  private backendUrl: string;
 
   constructor() {
     this.apiKey = import.meta.env.VITE_BREVO_API_KEY || '';
     this.listId = parseInt(import.meta.env.VITE_BREVO_LIST_ID || '0');
+    this.useBackendProxy = import.meta.env.VITE_USE_BACKEND_PROXY === 'true';
+    this.backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
     
     if (!this.apiKey) {
       console.warn('Brevo API key not found. Email subscriptions will be simulated.');
@@ -58,15 +62,29 @@ class BrevoService {
 
       console.log('Sending request to Brevo with data:', contact);
 
-      const response = await fetch(`${this.baseUrl}/contacts`, {
+      // Use backend proxy if configured, otherwise use direct API
+      const endpoint = this.useBackendProxy 
+        ? `${this.backendUrl}/api/waitlist/subscribe` // Backend proxy endpoint
+        : `${this.baseUrl}/contacts`;
+
+      const requestOptions: RequestInit = {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'api-key': this.apiKey,
         },
         body: JSON.stringify(contact),
-      });
+      };
+
+      // Add API key to headers only for direct API calls
+      if (!this.useBackendProxy) {
+        requestOptions.headers = {
+          ...requestOptions.headers,
+          'api-key': this.apiKey,
+        };
+      }
+
+      const response = await fetch(endpoint, requestOptions);
 
       const data: BrevoResponse = await response.json();
       console.log('Brevo API response:', { status: response.status, data });
@@ -90,6 +108,15 @@ class BrevoService {
       }
     } catch (error) {
       console.error('Network error details:', error);
+      
+      // Check if it's an ad blocker error
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        return { 
+          success: false, 
+          error: 'Request blocked by ad blocker. Please disable your ad blocker for this site or contact support.' 
+        };
+      }
+      
       return { 
         success: false, 
         error: 'Network error. Please check your connection and try again.' 
@@ -104,15 +131,28 @@ class BrevoService {
         listIds: this.listId ? [this.listId] : undefined,
       };
 
-      const response = await fetch(`${this.baseUrl}/contacts/${encodeURIComponent(email)}`, {
+      const endpoint = this.useBackendProxy 
+        ? `${this.backendUrl}/api/waitlist/update/${encodeURIComponent(email)}`
+        : `${this.baseUrl}/contacts/${encodeURIComponent(email)}`;
+
+      const requestOptions: RequestInit = {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'api-key': this.apiKey,
         },
         body: JSON.stringify(contact),
-      });
+      };
+
+      // Add API key to headers only for direct API calls
+      if (!this.useBackendProxy) {
+        requestOptions.headers = {
+          ...requestOptions.headers,
+          'api-key': this.apiKey,
+        };
+      }
+
+      const response = await fetch(endpoint, requestOptions);
 
       if (response.ok) {
         console.log('Successfully updated contact in Brevo:', email);
@@ -145,6 +185,7 @@ class BrevoService {
     console.log('subscribeToWaitlist called with email:', email);
     console.log('API Key available:', !!this.apiKey);
     console.log('List ID available:', this.listId);
+    console.log('Using backend proxy:', this.useBackendProxy);
     
     if (!this.isValidEmail(email)) {
       console.log('Invalid email format');
