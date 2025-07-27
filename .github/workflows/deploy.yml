@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -25,24 +25,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build with environment variables
         env:
-          NODE_ENV: production
           VITE_BREVO_API_KEY: ${{ secrets.VITE_BREVO_API_KEY }}
           VITE_BREVO_LIST_ID: ${{ secrets.VITE_BREVO_LIST_ID }}
+          VITE_USE_BACKEND_PROXY: ${{ secrets.VITE_USE_BACKEND_PROXY }}
+          VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
+        run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -50,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: "./dist"
 
   deploy:
     environment:
