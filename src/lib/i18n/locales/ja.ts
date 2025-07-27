@@ -14,7 +14,13 @@ export const ja: Translations = {
     emailPlaceholder: 'メールアドレスを入力',
     joinWaitlist: 'ウェイトリストに参加',
     successMessage: 'ご参加ありがとうございます！Ripplyのリリース時にお知らせします。',
-    errorMessage: 'エラーが発生しました。もう一度お試しください。'
+    errorMessage: 'エラーが発生しました。もう一度お試しください。',
+    // Specific error messages
+    invalidEmailError: '有効なメールアドレスを入力してください。',
+    networkError: 'ネットワークエラーです。接続を確認してからもう一度お試しください。',
+    adBlockerError: '広告ブロッカーによってリクエストがブロックされました。このサイトの広告ブロッカーを無効にするか、サポートにお問い合わせください。',
+    subscriptionError: '登録に失敗しました。もう一度お試しください。',
+    updateError: '登録の更新に失敗しました。もう一度お試しください。'
   },
   voiceNotes: [
     {

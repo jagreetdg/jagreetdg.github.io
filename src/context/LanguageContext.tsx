@@ -12,6 +12,7 @@ import {
 	getTranslations,
 	isValidLanguage,
 } from "../lib/i18n";
+import { ErrorType } from "../services/brevo";
 
 interface LanguageContextType {
 	language: Language;
@@ -83,4 +84,30 @@ export const useComingSoonTranslations = () => {
 export const useVoiceNoteTranslations = () => {
 	const { translations } = useLanguage();
 	return useMemo(() => translations.voiceNotes, [translations.voiceNotes]);
+};
+
+// Utility function to translate error types to localized messages
+export const useErrorTranslation = () => {
+	const { translations } = useLanguage();
+
+	return useCallback(
+		(errorType: ErrorType): string => {
+			switch (errorType) {
+				case "invalidEmail":
+					return translations.comingSoon.invalidEmailError;
+				case "networkError":
+					return translations.comingSoon.networkError;
+				case "adBlockerError":
+					return translations.comingSoon.adBlockerError;
+				case "subscriptionError":
+					return translations.comingSoon.subscriptionError;
+				case "updateError":
+					return translations.comingSoon.updateError;
+				case "genericError":
+				default:
+					return translations.comingSoon.errorMessage;
+			}
+		},
+		[translations.comingSoon]
+	);
 };

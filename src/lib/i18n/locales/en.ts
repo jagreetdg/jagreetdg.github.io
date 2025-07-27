@@ -14,7 +14,13 @@ export const en: Translations = {
     emailPlaceholder: 'Enter your email',
     joinWaitlist: 'Join Waitlist',
     successMessage: 'Thanks for joining! We\'ll notify you when Ripply launches.',
-    errorMessage: 'An error occurred. Please try again.'
+    errorMessage: 'An error occurred. Please try again.',
+    // Specific error messages
+    invalidEmailError: 'Please enter a valid email address.',
+    networkError: 'Network error. Please check your connection and try again.',
+    adBlockerError: 'Request blocked by ad blocker. Please disable your ad blocker for this site or contact support.',
+    subscriptionError: 'Failed to subscribe. Please try again.',
+    updateError: 'Failed to update subscription. Please try again.'
   },
   voiceNotes: [
     {

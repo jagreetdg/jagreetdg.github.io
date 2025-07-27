@@ -3,7 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, LoaderCircle } from "lucide-react";
 import { ButtonCta } from "../ui/button-shiny";
 import { Input } from "../ui/input";
-import { useComingSoonTranslations } from "../../context/LanguageContext";
+import {
+	useComingSoonTranslations,
+	useErrorTranslation,
+} from "../../context/LanguageContext";
 
 interface RippleState {
 	key: number;
@@ -18,7 +21,7 @@ type FormStatus = "idle" | "loading" | "success" | "error";
 interface WaitlistFormProps {
 	onSubscribe?: (
 		email: string
-	) => Promise<{ success: boolean; error?: string }>;
+	) => Promise<{ success: boolean; error?: string; errorType?: string }>;
 	fadeInUp: {
 		initial: { opacity: number; y: number };
 		animate: { opacity: number; y: number };
@@ -41,6 +44,7 @@ export const WaitlistForm = ({
 	});
 	const [clickRipples, setClickRipples] = useState<RippleState[]>([]);
 	const t = useComingSoonTranslations();
+	const translateError = useErrorTranslation();
 
 	const isLoading = formState.status === "loading";
 
@@ -85,10 +89,15 @@ export const WaitlistForm = ({
 				const result = await onSubscribe(formState.email);
 
 				if (!result.success) {
+					// Use errorType for translation if available, otherwise fall back to error message
+					const errorMessage = result.errorType
+						? translateError(result.errorType as any)
+						: result.error || t.errorMessage;
+
 					setFormState((prev) => ({
 						...prev,
 						status: "error",
-						message: result.error || t.errorMessage,
+						message: errorMessage,
 					}));
 				} else {
 					setFormState({
@@ -105,7 +114,13 @@ export const WaitlistForm = ({
 				}));
 			}
 		},
-		[formState.email, onSubscribe, t.errorMessage, t.successMessage]
+		[
+			formState.email,
+			onSubscribe,
+			t.errorMessage,
+			t.successMessage,
+			translateError,
+		]
 	);
 
 	return (

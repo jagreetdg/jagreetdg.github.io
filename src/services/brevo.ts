@@ -17,6 +17,21 @@ interface BrevoResponse {
   code?: string;
 }
 
+// Error types for internationalization
+export type ErrorType = 
+  | 'invalidEmail'
+  | 'networkError'
+  | 'adBlockerError'
+  | 'subscriptionError'
+  | 'updateError'
+  | 'genericError';
+
+interface ServiceResult {
+  success: boolean;
+  error?: string;
+  errorType?: ErrorType;
+}
+
 class BrevoService {
   private apiKey: string;
   private baseUrl = 'https://api.brevo.com/v3';
@@ -39,7 +54,7 @@ class BrevoService {
     }
   }
 
-  async addContact(email: string, attributes?: { [key: string]: any }): Promise<{ success: boolean; error?: string }> {
+  async addContact(email: string, attributes?: { [key: string]: any }): Promise<ServiceResult> {
     // If no API key, simulate success (for development)
     if (!this.apiKey) {
       console.log('Simulated Brevo subscription for:', email);
@@ -103,7 +118,8 @@ class BrevoService {
         console.error('Brevo API error:', data);
         return { 
           success: false, 
-          error: data.message || 'Failed to subscribe. Please try again.' 
+          error: data.message || 'Failed to subscribe. Please try again.',
+          errorType: 'subscriptionError'
         };
       }
     } catch (error) {
@@ -113,18 +129,20 @@ class BrevoService {
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
         return { 
           success: false, 
-          error: 'Request blocked by ad blocker. Please disable your ad blocker for this site or contact support.' 
+          error: 'Request blocked by ad blocker. Please disable your ad blocker for this site or contact support.',
+          errorType: 'adBlockerError'
         };
       }
       
       return { 
         success: false, 
-        error: 'Network error. Please check your connection and try again.' 
+        error: 'Network error. Please check your connection and try again.',
+        errorType: 'networkError'
       };
     }
   }
 
-  private async updateContact(email: string, attributes?: { [key: string]: any }): Promise<{ success: boolean; error?: string }> {
+  private async updateContact(email: string, attributes?: { [key: string]: any }): Promise<ServiceResult> {
     try {
       const contact: Partial<BrevoContact> = {
         attributes: attributes || {},
@@ -162,14 +180,16 @@ class BrevoService {
         console.error('Brevo update error:', data);
         return { 
           success: false, 
-          error: data.message || 'Failed to update subscription. Please try again.' 
+          error: data.message || 'Failed to update subscription. Please try again.',
+          errorType: 'updateError'
         };
       }
     } catch (error) {
       console.error('Update error:', error);
       return { 
         success: false, 
-        error: 'Failed to update subscription. Please try again.' 
+        error: 'Failed to update subscription. Please try again.',
+        errorType: 'updateError'
       };
     }
   }
@@ -181,7 +201,7 @@ class BrevoService {
   }
 
   // Public method with validation
-  async subscribeToWaitlist(email: string): Promise<{ success: boolean; error?: string }> {
+  async subscribeToWaitlist(email: string): Promise<ServiceResult> {
     console.log('subscribeToWaitlist called with email:', email);
     console.log('API Key available:', !!this.apiKey);
     console.log('List ID available:', this.listId);
@@ -189,7 +209,11 @@ class BrevoService {
     
     if (!this.isValidEmail(email)) {
       console.log('Invalid email format');
-      return { success: false, error: 'Please enter a valid email address.' };
+      return { 
+        success: false, 
+        error: 'Please enter a valid email address.',
+        errorType: 'invalidEmail'
+      };
     }
 
     // Add some metadata about the signup

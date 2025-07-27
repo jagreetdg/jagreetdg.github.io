@@ -10,6 +10,12 @@ export interface ComingSoonTranslations {
   joinWaitlist: string;
   successMessage: string;
   errorMessage: string;
+  // Specific error messages for better internationalization
+  invalidEmailError: string;
+  networkError: string;
+  adBlockerError: string;
+  subscriptionError: string;
+  updateError: string;
 }
 
 export interface VoiceNoteTranslations {
