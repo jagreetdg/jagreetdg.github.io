@@ -32,6 +32,56 @@ interface WaitlistFormProps {
 	};
 }
 
+// Custom email validation function
+const validateEmail = (
+	email: string
+): { isValid: boolean; errorType?: string } => {
+	if (!email) {
+		return { isValid: false, errorType: "invalidEmail" };
+	}
+
+	// Check for @ symbol
+	if (!email.includes("@")) {
+		return { isValid: false, errorType: "invalidEmail" };
+	}
+
+	// Check for domain after @
+	const parts = email.split("@");
+	if (parts.length !== 2 || !parts[1]) {
+		return { isValid: false, errorType: "invalidEmail" };
+	}
+
+	// Check for domain extension
+	if (!parts[1].includes(".")) {
+		return { isValid: false, errorType: "invalidEmail" };
+	}
+
+	// Check for consecutive dots (invalid)
+	if (email.includes("..")) {
+		return { isValid: false, errorType: "invalidEmail" };
+	}
+
+	// Check for dots at start or end of local part
+	const localPart = parts[0];
+	if (localPart.startsWith(".") || localPart.endsWith(".")) {
+		return { isValid: false, errorType: "invalidEmail" };
+	}
+
+	// Check for dots at start or end of domain
+	const domain = parts[1];
+	if (domain.startsWith(".") || domain.endsWith(".")) {
+		return { isValid: false, errorType: "invalidEmail" };
+	}
+
+	// Basic email regex validation
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	if (!emailRegex.test(email)) {
+		return { isValid: false, errorType: "invalidEmail" };
+	}
+
+	return { isValid: true };
+};
+
 export const WaitlistForm = ({
 	onSubscribe,
 	fadeInUp,
@@ -74,6 +124,21 @@ export const WaitlistForm = ({
 	const handleSubmit = useCallback(
 		async (e: React.FormEvent) => {
 			e.preventDefault();
+
+			// Clear any previous error messages
+			setFormState((prev) => ({ ...prev, message: "" }));
+
+			// Custom email validation
+			const emailValidation = validateEmail(formState.email);
+			if (!emailValidation.isValid) {
+				setFormState((prev) => ({
+					...prev,
+					status: "error",
+					message: translateError(emailValidation.errorType as any),
+				}));
+				return;
+			}
+
 			if (!onSubscribe) {
 				setFormState((prev) => ({
 					...prev,
@@ -162,15 +227,18 @@ export const WaitlistForm = ({
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
+						noValidate // Disable browser validation
 					>
 						<div className="flex flex-col gap-6 sm:gap-8">
 							<Input
-								type="email"
+								type="text" // Changed from "email" to "text" to disable browser validation
 								value={formState.email}
 								onChange={(e) =>
 									setFormState((prev) => ({
 										...prev,
 										email: e.target.value,
+										// Clear error message when user starts typing
+										message: prev.status === "error" ? "" : prev.message,
 									}))
 								}
 								placeholder={t.emailPlaceholder}
